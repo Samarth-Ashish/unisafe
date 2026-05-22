@@ -16,7 +16,7 @@ Widget buildReportCard(BuildContext context, Map<String, dynamic> reportData) {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               'Incident :',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -68,7 +68,7 @@ void showReportDialog(BuildContext context, Map<String, dynamic> reportData) {
             children: <Widget>[
               buildReportDetailRow('Incident', reportData['reportIncident'],
                   columnFormat: true),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               buildReportDetailRow('Physical Bullying',
@@ -79,7 +79,7 @@ void showReportDialog(BuildContext context, Map<String, dynamic> reportData) {
                   'Cyber Bullying', reportData['cyberBullying'] ? "Yes" : "No"),
               buildReportDetailRow('Social Bullying',
                   reportData['socialBullying'] ? "Yes" : "No"),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               buildReportDetailRow('Name', reportData['name']),
@@ -87,7 +87,7 @@ void showReportDialog(BuildContext context, Map<String, dynamic> reportData) {
               buildReportDetailRow(
                   'Registration ID', reportData['registrationId']),
               buildReportDetailRow('Block', reportData['block'].toString()),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               buildStatusRow(
@@ -125,14 +125,14 @@ Widget buildReportDetailRow(String title, String detail,
             children: [
               Text(
                 '$title: ',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   // fontSize: 16,
                 ),
               ),
               Text(
                 detail,
-                style: TextStyle(
+                style: const TextStyle(
                     // fontSize: 16,
                     ),
                 overflow: TextOverflow.visible,
@@ -143,14 +143,14 @@ Widget buildReportDetailRow(String title, String detail,
             children: [
               Text(
                 '$title : ',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   // fontSize: 18,
                 ),
               ),
               Text(
                 detail,
-                style: TextStyle(
+                style: const TextStyle(
                     // fontSize: 18,
                     ),
               )
@@ -166,7 +166,7 @@ Widget buildStatusRow(String title, String status, bool isPending) {
       children: [
         Text(
           '$title : ',
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             // color: isPending ? Colors.red : Colors.green,
           ),

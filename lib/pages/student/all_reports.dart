@@ -15,7 +15,7 @@ class _AllReportsPageState extends State<AllReportsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 255, 115, 0).withOpacity(0.7),
+        backgroundColor: const Color.fromARGB(255, 255, 115, 0).withOpacity(0.7),
         centerTitle: true,
         title: const Text('All Reports'),
       ),

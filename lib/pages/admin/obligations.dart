@@ -34,7 +34,7 @@ class AdminObligationsPage extends StatelessWidget {
               shadowColor: Colors.green.withOpacity(0.8),
               margin: const EdgeInsets.symmetric(vertical: 10.0),
               child: ListTile(
-                leading: Icon(Icons.check_circle, color: Colors.green),
+                leading: const Icon(Icons.check_circle, color: Colors.green),
                 // title: Text(
                 //   'Obligation ${index + 1}',
                 //   style: TextStyle(fontWeight: FontWeight.bold),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
   final ValueNotifier userCredential;
-  const ProfilePage({Key? key, required this.userCredential});
+  const ProfilePage({super.key, required this.userCredential});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -36,15 +36,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               'Name: ${widget.userCredential.value.user!.displayName!.toString()}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Email: ${widget.userCredential.value.user!.email!.toString()}',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
             // Add other user info here
           ],

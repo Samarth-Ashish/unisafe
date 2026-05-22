@@ -63,9 +63,9 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
       leading: Icon(icon, color: Colors.orange),
       title: Text(
         label,
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
       ),
-      trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
+      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey),
       onTap: onTap,
     );
   }
@@ -92,7 +92,7 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
           future: _fetchUserReports(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return AlertDialog(
@@ -166,7 +166,7 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
                               .doc(selectedReportId)
                               .delete();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Report deleted')),
+                            const SnackBar(content: Text('Report deleted')),
                           );
                           Navigator.of(context).pop();
                         }
@@ -180,7 +180,6 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
         );
       },
     );
-    ;
   }
 
   void _showDeleteAllReportsDialog(BuildContext context) {
@@ -192,7 +191,7 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
             builder: (context, snapshot) {
               //
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {

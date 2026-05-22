@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SupportPage extends StatefulWidget {
+  const SupportPage({super.key});
+
   @override
   _SupportPageState createState() => _SupportPageState();
 }
@@ -23,7 +25,7 @@ class _SupportPageState extends State<SupportPage> {
         stream: FirebaseFirestore.instance.collection('contacts').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -46,7 +48,7 @@ class _SupportPageState extends State<SupportPage> {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.grey[400]!, width: 1),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         hint: Text(
@@ -98,7 +100,7 @@ class _SupportPageState extends State<SupportPage> {
                               color: Colors.grey[600],
                             ),
                           ),
-                          leading: Icon(
+                          leading: const Icon(
                             Icons.location_city,
                             color: Colors.blueAccent,
                           ),

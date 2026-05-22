@@ -50,7 +50,7 @@ class _ContactUsAdminPageState extends State<ContactUsAdminPage> {
   Widget _buildHeader(String text) {
     return Text(
       text,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
         color: Colors.orange,
@@ -77,14 +77,14 @@ class _ContactUsAdminPageState extends State<ContactUsAdminPage> {
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
               ),
               overflow: TextOverflow.visible,
             ),
           ),
           IconButton(
-            icon: Icon(Icons.copy_rounded, color: Colors.blue),
+            icon: const Icon(Icons.copy_rounded, color: Colors.blue),
             onPressed: () {
               Clipboard.setData(ClipboardData(text: copyText));
               ScaffoldMessenger.of(context).showSnackBar(
@@ -100,7 +100,7 @@ class _ContactUsAdminPageState extends State<ContactUsAdminPage> {
   Widget _buildAddressText(String text) {
     return Text(
       text,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 18,
       ),
     );

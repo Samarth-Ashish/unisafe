@@ -11,10 +11,10 @@ class TipsPage extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.deepOrange.withOpacity(0.7),
-        title: Text('Reporting Tips'),
+        title: const Text('Reporting Tips'),
       ),
       body: ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         children: [
           _buildTip('Choose Anonymity',
               'Users should opt for anonymity when reporting bullying incidents to ensure their identity remains confidential.'),
@@ -55,11 +55,11 @@ class TipsPage extends StatelessWidget {
     return Card(
       elevation: 6, // Elevation for card shadow
       shadowColor: Colors.grey.shade700,
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListTile(
         title: Text(
           title,
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
         subtitle: Text(description),
       ),

@@ -64,7 +64,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
         backgroundColor: Colors.grey.withOpacity(0.2),
         type: BottomNavigationBarType.fixed,
 
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
             label: 'Dashboard',
@@ -95,7 +95,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
             UserAccountsDrawerHeader(
               accountName: Text(
                 widget.userCredential.value.user!.displayName!.toString(),
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   // color: Colors.black, // Change text color to a darker shade of orange
@@ -103,7 +103,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
               ),
               accountEmail: Text(
                 widget.userCredential.value.user!.email!.toString(),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   // color: Colors.orange
                   //     .shade700, // Change text color to a medium shade of orange
@@ -151,7 +151,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ContactUsPage(),
+                    builder: (context) => const ContactUsPage(),
                   ),
                 );
               },
@@ -191,7 +191,6 @@ class _StudentHomePageState extends State<StudentHomePage> {
         ),
       ),
     );
-    ;
   }
 
   Widget _buildDrawerItem({
@@ -237,7 +236,7 @@ class _DashboardPageState extends State<DashboardPage> {
         break;
       case 1:
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SupportPage()));
+            context, MaterialPageRoute(builder: (context) => const SupportPage()));
         break;
       case 2:
         Navigator.push(
@@ -361,9 +360,9 @@ class _DashboardPageState extends State<DashboardPage> {
       child: InkWell(
         onTap: onTap,
         child: Card(
-          color: Color.fromARGB(255, 255, 115, 0).withOpacity(0.7),
+          color: const Color.fromARGB(255, 255, 115, 0).withOpacity(0.7),
           elevation: 20,
-          shadowColor: Color.fromARGB(255, 255, 115, 0),
+          shadowColor: const Color.fromARGB(255, 255, 115, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -40,7 +40,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
               UserAccountsDrawerHeader(
                 accountName: Text(
                   widget.userCredential.value.user!.displayName!.toString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                     // color: Colors.black, // Change text color to a darker shade of orange
@@ -48,7 +48,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 ),
                 accountEmail: Text(
                   widget.userCredential.value.user!.email!.toString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     // color: Colors.orange
                     //     .shade700, // Change text color to a medium shade of orange
@@ -84,7 +84,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          ContactUsAdminPage(), // Now fetching reports from Firestore
+                          const ContactUsAdminPage(), // Now fetching reports from Firestore
                     ),
                   );
                 },
@@ -195,7 +195,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AdminObligationsPage()),
+                            builder: (context) => const AdminObligationsPage()),
                       );
                     },
                   ),

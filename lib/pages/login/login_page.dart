@@ -48,7 +48,7 @@ class _SignupPageState extends State<SignupPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   //
@@ -66,7 +66,7 @@ class _SignupPageState extends State<SignupPage> {
                               0.8), // Adjust opacity for blur strength
                           Colors.transparent,
                         ],
-                        stops: [
+                        stops: const [
                           0.5,
                           1.0
                         ], // Evenly distribute color transitions

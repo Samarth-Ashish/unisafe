@@ -28,13 +28,15 @@ class FAQPage extends StatelessWidget {
     'You can contribute to creating a bully-free environment by promoting kindness, respect, and empathy in your school and community. Stand up against bullying when you see it, support others who are being targeted, and be a positive role model for those around you.',
   ];
 
+  FAQPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.deepOrange.withOpacity(0.7),
-        title: Text('FAQ'),
+        title: const Text('FAQ'),
       ),
       body: Container(
         // color: Colors.grey[200], // Background color
@@ -44,12 +46,12 @@ class FAQPage extends StatelessWidget {
             return Card(
               elevation: 6, // Elevation for card shadow
               shadowColor: Colors.grey.shade700,
-              margin: EdgeInsets.symmetric(
+              margin: const EdgeInsets.symmetric(
                   vertical: 8, horizontal: 16), // Margin around each card
               child: ExpansionTile(
                 title: Text(
                   _questions[index],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),

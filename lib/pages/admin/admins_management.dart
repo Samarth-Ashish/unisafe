@@ -19,16 +19,16 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
       appBar: AppBar(
         backgroundColor: Colors.purple.withOpacity(0.7),
         centerTitle: true,
-        title: Text('Admin Management'),
+        title: const Text('Admin Management'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('admins').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No admins found'));
+            return const Center(child: Text('No admins found'));
           }
 
           Map adminMap = snapshot.data!.docs[0]['admins_with_block']
@@ -50,8 +50,8 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
         _showAddAdminDialog(context);
       },
       tooltip: 'Add Admin',
-      child: Icon(Icons.add),
       backgroundColor: Colors.purple.withOpacity(0.7),
+      child: const Icon(Icons.add),
     );
   }
 
@@ -59,15 +59,15 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
     String email = '';
     int block = 0;
 
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Admin'),
+          title: const Text('Add Admin'),
           content: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -78,11 +78,11 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
-                    email = value as String;
+                    email = value;
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -97,7 +97,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Block',
@@ -105,7 +105,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
@@ -126,16 +126,16 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
+                if (formKey.currentState!.validate()) {
                   _addAdmin(email, block);
                   Navigator.of(context).pop();
                 }
               },
-              child: Text('Add'),
+              child: const Text('Add'),
             ),
           ],
         );
@@ -157,18 +157,18 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
             .collection('admins')
             .doc('admin_list')
             .update({'admins_with_block': adminMap}).then((_) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Admin added successfully'),
             duration: Duration(seconds: 2),
           ));
         }).catchError((error) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Failed to add admin: $error'),
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ));
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Admin list not found'),
           duration: Duration(seconds: 2),
         ));
@@ -176,7 +176,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Failed to fetch admin list: $error'),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ));
     });
   }
@@ -185,11 +185,11 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
+        const Text(
           'Admins',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Expanded(
           child: ListView.builder(
             itemCount: adminMap.length,
@@ -212,7 +212,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
         ? Card(
             elevation: 6,
             shadowColor: Colors.purple.withOpacity(0.8),
-            margin: EdgeInsets.symmetric(vertical: 8),
+            margin: const EdgeInsets.symmetric(vertical: 8),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -220,13 +220,13 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
               title: Text(email),
               subtitle: Text('Block: $block'),
               trailing: IconButton(
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
                 color: Colors.red.withOpacity(0.8),
                 onPressed: onDelete,
               ),
             ),
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 
   Future<void> _showDeleteConfirmationDialog(
@@ -236,11 +236,11 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
+          title: const Text('Confirm Deletion'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(
+                const Text(
                   'Are you sure you want to delete this admin?',
                   // style: TextStyle(
                   //   fontWeight: FontWeight.bold,
@@ -248,7 +248,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
                 ),
                 Text(
                   'Email: $email',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -257,13 +257,13 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Delete'),
+              child: const Text('Delete'),
               onPressed: () {
                 _deleteAdmin(email);
                 Navigator.of(context).pop();
@@ -289,18 +289,18 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
             .collection('admins')
             .doc('admin_list')
             .update({'admins_with_block': adminMap}).then((_) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Admin deleted successfully'),
             duration: Duration(seconds: 2),
           ));
         }).catchError((error) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text('Failed to delete admin: $error'),
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ));
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Admin list not found'),
           duration: Duration(seconds: 2),
         ));
@@ -308,7 +308,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Failed to fetch admin list: $error'),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ));
     });
   }

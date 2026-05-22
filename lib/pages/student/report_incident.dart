@@ -97,7 +97,7 @@ class _FileReportPageState extends State<FileReportPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
                       _buildTextField(
@@ -298,7 +298,7 @@ class _FileReportPageState extends State<FileReportPage> {
         ],
       ),
       child: DropdownButtonFormField<int>(
-        value: _block,
+        initialValue: _block,
         items: _dropDownItems,
         onChanged: (int? value) {
           setState(() {

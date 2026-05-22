@@ -119,7 +119,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               _buildTextField(

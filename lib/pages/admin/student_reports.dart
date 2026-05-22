@@ -139,7 +139,7 @@ class _StudentReportPageState extends State<StudentReportPage> {
           children: <TextSpan>[
             TextSpan(
               text: value.toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.normal,
                 color: Colors.orange,
               ),

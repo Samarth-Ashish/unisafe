@@ -43,13 +43,15 @@ class StoriesPage extends StatelessWidget {
     'https://compote.slate.com/images/0524f5f9-2bcb-47e8-85f4-103e21cec7ca.jpg',
   ];
 
+  StoriesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.deepOrange.withOpacity(0.7),
-        title: Text('Bully Combat Stories'),
+        title: const Text('Bully Combat Stories'),
       ),
       body: ListView.builder(
         itemCount: _storyTitles.length,
@@ -57,7 +59,7 @@ class StoriesPage extends StatelessWidget {
           return Card(
             elevation: 6, // Elevation for card shadow
             shadowColor: Colors.grey.shade700,
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ListTile(
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(_storyImages[index]),
@@ -89,8 +91,8 @@ class StoryDetailPage extends StatelessWidget {
   final String content;
   final String imageUrl;
 
-  StoryDetailPage(
-      {required this.title, required this.content, required this.imageUrl});
+  const StoryDetailPage(
+      {super.key, required this.title, required this.content, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +121,7 @@ class StoryDetailPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
                         content,
-                        style: TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
                   ],
