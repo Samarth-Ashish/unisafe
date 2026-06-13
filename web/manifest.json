@@ -1,6 +1,6 @@
 {
-    "name": "flutter_unisafe",
-    "short_name": "flutter_unisafe",
+    "name": "unisafe",
+    "short_name": "unisafe",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

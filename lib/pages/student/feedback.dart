@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_unisafe/models/theme_provider.dart';
+import 'package:unisafe/models/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 
@@ -32,8 +32,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       final Email email = Email(
         body:
             'Feedback:\n ${_feedbackController.text} \n\n- Contact email: ${_emailController.text}\n- Contact number: ${_phoneController.text}',
-        subject:
-            'Feedback by ${_nameController.text}', //- (${widget.userCredential.value.user!.email!.toString()})',
+        subject: 'Feedback by ${_nameController.text}', //- (${widget.userCredential.value.user!.email!.toString()})',
         recipients: ['unisafelpu@gmail.com'],
         // attachmentPaths: attachments,
         isHTML: false,
@@ -51,11 +50,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(platformResponse),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(platformResponse)));
     }
   }
 
@@ -81,26 +76,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: context.watch<ThemeProvider>().isDark
-            ? Colors.grey.shade900
-            : Colors.white,
+        color: context.watch<ThemeProvider>().isDark ? Colors.grey.shade900 : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.deepOrange.withOpacity(0.3),
-            spreadRadius: 3,
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
+          BoxShadow(color: Colors.deepOrange.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10, offset: const Offset(0, 3)),
         ],
       ),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
         keyboardType: keyboardType,
         validator: validator,
@@ -119,9 +105,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               _buildTextField(
                 controller: _nameController,
                 label: 'Name',
@@ -175,19 +159,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepOrange.withOpacity(0.8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+                  backgroundColor: Colors.deepOrange.withValues(alpha: 0.8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 ),
                 onPressed: _submitFeedback,
                 child: Text(
                   'Submit',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: context.watch<ThemeProvider>().isDark
-                          ? Colors.white
-                          : Colors.black),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black),
                 ),
               ),
             ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_unisafe/models/theme_provider.dart';
+import 'package:unisafe/models/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class FileReportPage extends StatefulWidget {
@@ -16,8 +16,7 @@ class _FileReportPageState extends State<FileReportPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _reportController = TextEditingController();
-  final TextEditingController _registrationIdController =
-      TextEditingController();
+  final TextEditingController _registrationIdController = TextEditingController();
   bool _physicalBully = false;
   bool _verbalBully = false;
   bool _cyberBully = false;
@@ -36,12 +35,7 @@ class _FileReportPageState extends State<FileReportPage> {
   List<DropdownMenuItem<int>> get _dropDownItems {
     List<DropdownMenuItem<int>> items = [];
     for (int i = 1; i <= 56; i++) {
-      items.add(
-        DropdownMenuItem(
-          value: i,
-          child: Text('Block $i'),
-        ),
-      );
+      items.add(DropdownMenuItem(value: i, child: Text('Block $i')));
     }
     return items;
   }
@@ -49,8 +43,7 @@ class _FileReportPageState extends State<FileReportPage> {
   Future<void> _submitReport() async {
     if (_formKey.currentState!.validate()) {
       final Map<String, dynamic> data = {
-        'reportedFromEmail':
-            widget.userCredential.value.user!.email!.toString(),
+        'reportedFromEmail': widget.userCredential.value.user!.email!.toString(),
         'name': _nameController.text,
         'email': _emailController.text,
         'reportIncident': _reportController.text,
@@ -66,12 +59,10 @@ class _FileReportPageState extends State<FileReportPage> {
 
       try {
         await FirebaseFirestore.instance.collection('reports').add(data);
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Report submitted successfully')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report submitted successfully')));
         Navigator.pop(context);
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to submit report: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to submit report: $e')));
       }
     }
   }
@@ -79,11 +70,7 @@ class _FileReportPageState extends State<FileReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.deepOrange.withOpacity(0.7),
-        title: const Text('Report Incident'),
-      ),
+      appBar: AppBar(centerTitle: true, backgroundColor: Colors.deepOrange.withValues(alpha: 0.7), title: const Text('Report Incident')),
       body: Container(
         // padding: const EdgeInsets.all(8.0),
         padding: const EdgeInsets.all(8),
@@ -97,9 +84,7 @@ class _FileReportPageState extends State<FileReportPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       _buildTextField(
                         controller: _registrationIdController,
                         label: 'Registration ID',
@@ -132,8 +117,7 @@ class _FileReportPageState extends State<FileReportPage> {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email';
                           }
-                          String pattern =
-                              r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                          String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
                           RegExp regex = RegExp(pattern);
                           if (!regex.hasMatch(value)) {
                             return 'Please enter a valid email address';
@@ -201,36 +185,27 @@ class _FileReportPageState extends State<FileReportPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                      Colors.deepOrange.withOpacity(0.8),
-                    )),
+                    style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepOrange.withValues(alpha: 0.8))),
                     onPressed: _submitReport,
                     child: Text(
                       'Save & Submit',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: context.watch<ThemeProvider>().isDark
-                            ? Colors.white
-                            : Colors.black,
+                        color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black,
                       ),
                     ),
                   ),
                   ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                      Colors.deepOrange.withOpacity(0.8),
-                    )),
+                    style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepOrange.withValues(alpha: 0.8))),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     child: Text(
                       'Cancel',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: context.watch<ThemeProvider>().isDark
-                              ? Colors.white
-                              : Colors.black),
+                        fontWeight: FontWeight.bold,
+                        color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black,
+                      ),
                     ),
                   ),
                 ],
@@ -252,26 +227,17 @@ class _FileReportPageState extends State<FileReportPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 6),
       decoration: BoxDecoration(
-        color: context.watch<ThemeProvider>().isDark
-            ? Colors.grey.shade900
-            : Colors.white,
+        color: context.watch<ThemeProvider>().isDark ? Colors.grey.shade900 : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.deepOrange.withOpacity(0.3),
-            spreadRadius: 3,
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
+          BoxShadow(color: Colors.deepOrange.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10, offset: const Offset(0, 3)),
         ],
       ),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
         ),
         keyboardType: keyboardType,
         validator: validator,
@@ -284,17 +250,10 @@ class _FileReportPageState extends State<FileReportPage> {
     return Container(
       // margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
-        color: context.watch<ThemeProvider>().isDark
-            ? Colors.grey.shade900
-            : Colors.white,
+        color: context.watch<ThemeProvider>().isDark ? Colors.grey.shade900 : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.deepOrange.withOpacity(0.3),
-            spreadRadius: 3,
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
+          BoxShadow(color: Colors.deepOrange.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10, offset: const Offset(0, 3)),
         ],
       ),
       child: DropdownButtonFormField<int>(
@@ -307,9 +266,7 @@ class _FileReportPageState extends State<FileReportPage> {
         },
         decoration: InputDecoration(
           labelText: 'Block',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
           contentPadding: const EdgeInsets.all(10.0),
         ),
         validator: (value) {
@@ -322,15 +279,7 @@ class _FileReportPageState extends State<FileReportPage> {
     );
   }
 
-  Widget _buildCheckboxListTile({
-    required String title,
-    required bool value,
-    required ValueChanged<bool?> onChanged,
-  }) {
-    return CheckboxListTile(
-      title: Text(title),
-      value: value,
-      onChanged: onChanged,
-    );
+  Widget _buildCheckboxListTile({required String title, required bool value, required ValueChanged<bool?> onChanged}) {
+    return CheckboxListTile(title: Text(title), value: value, onChanged: onChanged);
   }
 }

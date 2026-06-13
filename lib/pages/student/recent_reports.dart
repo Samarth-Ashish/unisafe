@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_unisafe/pages/student/report_widgets.dart';
+import 'package:unisafe/pages/student/report_widgets.dart';
 
 class RecentReportsPage extends StatefulWidget {
   final ValueNotifier userCredential;
@@ -37,15 +37,14 @@ class _RecentReportsPageState extends State<RecentReportsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 255, 115, 0).withOpacity(0.7),
+        backgroundColor: const Color.fromARGB(255, 255, 115, 0).withValues(alpha: 0.7),
         centerTitle: true,
         title: const Text('Recent Reports'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('reports')
-            .where('reportedFromEmail',
-                isEqualTo: widget.userCredential.value.user!.email!.toString())
+            .where('reportedFromEmail', isEqualTo: widget.userCredential.value.user!.email!.toString())
             .orderBy('submittedAt', descending: true)
             .limit(1) // Get only the first document (latest)
             .snapshots(),
@@ -57,11 +56,8 @@ class _RecentReportsPageState extends State<RecentReportsPage> {
           }
 
           if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-            final reportData =
-                snapshot.data!.docs[0].data() as Map<String, dynamic>;
-            return reportData.isNotEmpty
-                ? buildReportCard(context, reportData)
-                : const Center(child: Text('No reports found'));
+            final reportData = snapshot.data!.docs[0].data() as Map<String, dynamic>;
+            return reportData.isNotEmpty ? buildReportCard(context, reportData) : const Center(child: Text('No reports found'));
           }
 
           return const Center(child: Text('No reports found'));

@@ -1,29 +1,17 @@
-# 🚨 Unisafe - Campus Safety & Incident Reporting (Flutter + Firebase)
+# unisafe
 
-A cross-platform **Flutter** application that empowers **students** to report incidents and access support, while enabling **administrators** to review, manage, and resolve reports. Built with **Firebase Authentication** and **Cloud Firestore**.
+A new Flutter project.
 
----
+## Getting Started
 
-## ✨ Features
+This project is a starting point for a Flutter application.
 
-### 👩‍🎓 Student
-- 📌 **Report Incidents** — submit reports with details; track **Recent**, **Resolved**, and **All**.
-- ☎️ **Support Contacts** — quick access to emergency/help numbers.
-- 📖 **Resources** — FAQs, safety tips, and community stories.
-- 📝 **Feedback & Contact Us**
-- 👤 **Profile & Settings** — manage preferences and appearance (theme).
+A few resources to get you started if this is your first Flutter project:
 
-### 🛡️ Admin
-- 📊 **Dashboard** — overview of incoming and resolved reports.
-- 🧑‍💼 **Admins Management** — add/manage admin accounts.
-- 📑 **Student Reports** — review, update status, and resolve incidents.
-- 📃 **Obligations/Policies** — admin guidance and processes.
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
 
----
-
-## 🛠 Tech Stack
-
-- **Flutter (Dart)**
-- **Firebase Authentication**
-- **Cloud Firestore**
-- Theming via app-level **Theme Provider**
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

@@ -1,7 +1,7 @@
 //get_reports_page.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_unisafe/models/theme_provider.dart';
+import 'package:unisafe/models/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class StudentReportPage extends StatefulWidget {
@@ -16,25 +16,21 @@ class _StudentReportPageState extends State<StudentReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.orange.withOpacity(0.7),
-        title: const Text('Student Reports'),
-      ),
+      appBar: AppBar(centerTitle: true, backgroundColor: Colors.orange.withValues(alpha: 0.7), title: const Text('Student Reports')),
       body: StreamBuilder<QuerySnapshot>(
         // stream: FirebaseFirestore.instance.collection('reports').snapshots(),
         stream: (widget.block == 0)
             ? FirebaseFirestore.instance
-                .collection('reports')
-                .where('decisionPending', isEqualTo: true)
-                .orderBy('submittedAt', descending: true)
-                .snapshots()
+                  .collection('reports')
+                  .where('decisionPending', isEqualTo: true)
+                  .orderBy('submittedAt', descending: true)
+                  .snapshots()
             : FirebaseFirestore.instance
-                .collection('reports')
-                .where('block', isEqualTo: widget.block)
-                .where('decisionPending', isEqualTo: true)
-                .orderBy('submittedAt', descending: true)
-                .snapshots(),
+                  .collection('reports')
+                  .where('block', isEqualTo: widget.block)
+                  .where('decisionPending', isEqualTo: true)
+                  .orderBy('submittedAt', descending: true)
+                  .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -60,7 +56,7 @@ class _StudentReportPageState extends State<StudentReportPage> {
                 // color: Colors.grey.shade800,
                 margin: const EdgeInsets.all(10),
                 elevation: 8,
-                shadowColor: Colors.orange.withOpacity(0.8),
+                shadowColor: Colors.orange.withValues(alpha: 0.8),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -72,29 +68,23 @@ class _StudentReportPageState extends State<StudentReportPage> {
                       _buildInfoRow('Incident', data['reportIncident']),
                       _buildInfoRow('Bullying Type', bullyingTypes.join(', ')),
                       _buildInfoRow('Block', data['block']),
-                      submittedAt != null
-                          ? _buildInfoRow(
-                              'Submitted At', _formatTimestamp(submittedAt))
-                          : Container(),
+                      submittedAt != null ? _buildInfoRow('Submitted At', _formatTimestamp(submittedAt)) : Container(),
                       const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerRight,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                              backgroundColor: WidgetStateProperty.all(
-                                  context.watch<ThemeProvider>().isDark
-                                      ? Colors.purple.shade900
-                                      : Colors.purple.shade100)),
+                            backgroundColor: WidgetStateProperty.all(
+                              context.watch<ThemeProvider>().isDark ? Colors.purple.shade900 : Colors.purple.shade100,
+                            ),
+                          ),
                           child: const Text('Resolve'),
                           // style: ElevatedButton.styleFrom(
                           //   primary: Colors.green, // Background color
                           // ),
                           onPressed: () async {
                             debugPrint("Resolved ${report.id.toString()}");
-                            await FirebaseFirestore.instance
-                                .collection('reports')
-                                .doc(report.id)
-                                .update({'decisionPending': false});
+                            await FirebaseFirestore.instance.collection('reports').doc(report.id).update({'decisionPending': false});
                           },
                         ),
                       ),
@@ -132,17 +122,12 @@ class _StudentReportPageState extends State<StudentReportPage> {
           style: TextStyle(
             fontSize: 16,
             // fontWeight: FontWeight.bold,
-            color: context.watch<ThemeProvider>().isDark
-                ? Colors.white
-                : Colors.black,
+            color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black,
           ),
           children: <TextSpan>[
             TextSpan(
               text: value.toString(),
-              style: const TextStyle(
-                fontWeight: FontWeight.normal,
-                color: Colors.orange,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.orange),
             ),
           ],
         ),

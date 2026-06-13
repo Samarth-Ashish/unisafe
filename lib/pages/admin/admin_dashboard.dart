@@ -1,17 +1,16 @@
 //admin_dashboard.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_unisafe/models/theme_provider.dart';
-import 'package:flutter_unisafe/pages/admin/admins_management.dart';
-import 'package:flutter_unisafe/pages/admin/contact_us.dart';
-import 'package:flutter_unisafe/pages/admin/obligations.dart';
+import 'package:unisafe/models/theme_provider.dart';
+import 'package:unisafe/pages/admin/admins_management.dart';
+import 'package:unisafe/pages/admin/contact_us.dart';
+import 'package:unisafe/pages/admin/obligations.dart';
 import '../login/google_login_handler.dart';
 import 'student_reports.dart';
 
 class AdminDashboard extends StatefulWidget {
   final ValueNotifier userCredential;
   final int block;
-  const AdminDashboard(
-      {super.key, required this.userCredential, required this.block});
+  const AdminDashboard({super.key, required this.userCredential, required this.block});
 
   @override
   State<AdminDashboard> createState() => _AdminDashboardState();
@@ -26,11 +25,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
       appBar: AppBar(
         centerTitle: true,
         // actions: themeSwitchWithIcons(context),
-        title: const Text(
-          'ADMIN DASHBOARD',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.green.shade700.withOpacity(0.7),
+        title: const Text('ADMIN DASHBOARD', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.green.shade700.withValues(alpha: 0.7),
       ),
       drawer: Drawer(
         child: Container(
@@ -56,35 +52,24 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 ),
                 currentAccountPicture: CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage(
-                    widget.userCredential.value.user!.photoURL!.toString(),
-                  ),
+                  backgroundImage: NetworkImage(widget.userCredential.value.user!.photoURL!.toString()),
                 ),
                 decoration: BoxDecoration(
                   color: Colors.green.shade700,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 5,
-                      spreadRadius: 5,
-                    ),
-                  ],
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 5, spreadRadius: 5)],
                 ),
               ),
               ListTile(
                 leading: const Icon(Icons.contacts),
                 title: Text(
                   "Contact Us",
-                  style: TextStyle(
-                      color: Colors.green.shade600,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.green.shade600, fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          const ContactUsAdminPage(), // Now fetching reports from Firestore
+                      builder: (context) => const ContactUsAdminPage(), // Now fetching reports from Firestore
                     ),
                   );
                 },
@@ -93,9 +78,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 leading: const Icon(Icons.logout),
                 title: Text(
                   "LogOut",
-                  style: TextStyle(
-                      color: Colors.green.shade600,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.green.shade600, fontWeight: FontWeight.bold),
                 ),
                 onTap: () async {
                   Navigator.pop(context); //routes
@@ -104,20 +87,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 },
               ),
               ListTile(
-                leading: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...themeSwitchWithIcons(context),
-                  ],
-                ),
+                leading: Row(mainAxisSize: MainAxisSize.min, children: [...themeSwitchWithIcons(context)]),
                 title: Text(
                   'Theme',
-                  style: TextStyle(
-                      color: Colors.green.shade600,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.green.shade600, fontWeight: FontWeight.bold),
                 ),
                 onTap: () async {},
-              )
+              ),
             ],
           ),
         ),
@@ -129,11 +105,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             (widget.block != 0)
                 ? Text(
                     'Block ${widget.block}',
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 18, fontWeight: FontWeight.bold),
                   )
                 : Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -146,23 +118,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         });
                       },
                       items: [
-                        const DropdownMenuItem<int>(
-                          value: 0,
-                          child: Text('All Blocks'),
-                        ),
+                        const DropdownMenuItem<int>(value: 0, child: Text('All Blocks')),
                         ...List<DropdownMenuItem<int>>.generate(
                           56,
-                          (index) => DropdownMenuItem(
-                            value: index + 1,
-                            child: Text('Block ${index + 1}'),
-                          ),
+                          (index) => DropdownMenuItem(value: index + 1, child: Text('Block ${index + 1}')),
                         ),
                       ],
                     ),
                   ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
@@ -179,9 +143,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => StudentReportPage(
-                            block: (widget.block != 0)
-                                ? widget.block
-                                : selectedBlock ?? 0,
+                            block: (widget.block != 0) ? widget.block : selectedBlock ?? 0,
                           ), // Now fetching reports from Firestore
                         ),
                       );
@@ -192,11 +154,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     title: 'Obligations',
                     color: const Color.fromARGB(255, 64, 182, 60),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AdminObligationsPage()),
-                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminObligationsPage()));
                     },
                   ),
                   if (widget.block == 0)
@@ -208,11 +166,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         // Navigate to events page
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => AdminManagementPage(
-                              userCredential: widget.userCredential,
-                            ),
-                          ),
+                          MaterialPageRoute(builder: (context) => AdminManagementPage(userCredential: widget.userCredential)),
                         );
                       },
                     ),
@@ -232,13 +186,7 @@ class DashboardCard extends StatefulWidget {
   final Color color;
   final VoidCallback onPressed;
 
-  const DashboardCard({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.color,
-    required this.onPressed,
-  });
+  const DashboardCard({super.key, required this.icon, required this.title, required this.color, required this.onPressed});
 
   @override
   State<DashboardCard> createState() => _DashboardCardState();
@@ -259,21 +207,14 @@ class _DashboardCardState extends State<DashboardCard> {
         padding: EdgeInsets.all(isPressed ? 15 : 20),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [widget.color.withOpacity(0.5), widget.color],
+            colors: [widget.color.withValues(alpha: 0.5), widget.color],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(15),
           boxShadow: isPressed
               ? []
-              : [
-                  BoxShadow(
-                    color: widget.color.withOpacity(0.5),
-                    spreadRadius: 4,
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+              : [BoxShadow(color: widget.color.withValues(alpha: 0.5), spreadRadius: 4, blurRadius: 10, offset: const Offset(0, 3))],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -284,12 +225,8 @@ class _DashboardCardState extends State<DashboardCard> {
             Center(
               child: Text(
                 widget.title,
-                textAlign:
-                    TextAlign.center, // Align text in the center horizontally
-                style: const TextStyle(
-                  fontSize: 18.0,
-                  color: Colors.white,
-                ),
+                textAlign: TextAlign.center, // Align text in the center horizontally
+                style: const TextStyle(fontSize: 18.0, color: Colors.white),
               ),
             ),
           ],

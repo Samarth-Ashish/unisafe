@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_unisafe/pages/student/report_widgets.dart';
+import 'package:unisafe/pages/student/report_widgets.dart';
 
 class MyReportsPage extends StatefulWidget {
   final ValueNotifier userCredential;
@@ -14,11 +14,7 @@ class _MyReportsPageState extends State<MyReportsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.deepOrange.withOpacity(0.7),
-        title: const Text('Resolved Reports'),
-      ),
+      appBar: AppBar(centerTitle: true, backgroundColor: Colors.deepOrange.withValues(alpha: 0.7), title: const Text('Resolved Reports')),
       body: _buildReportsStream(),
     );
   }
@@ -27,8 +23,7 @@ class _MyReportsPageState extends State<MyReportsPage> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('reports')
-          .where('reportedFromEmail',
-              isEqualTo: widget.userCredential.value.user!.email!.toString())
+          .where('reportedFromEmail', isEqualTo: widget.userCredential.value.user!.email!.toString())
           .where('decisionPending', isEqualTo: false)
           .orderBy('submittedAt', descending: true)
           .snapshots(),
@@ -43,8 +38,7 @@ class _MyReportsPageState extends State<MyReportsPage> {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              var data =
-                  snapshot.data!.docs[index].data() as Map<String, dynamic>;
+              var data = snapshot.data!.docs[index].data() as Map<String, dynamic>;
               return buildReportCard(context, data);
             },
           );

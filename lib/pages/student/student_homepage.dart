@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_unisafe/pages/student/all_reports.dart';
-import 'package:flutter_unisafe/pages/student/contact_us.dart';
-import 'package:flutter_unisafe/pages/student/feedback.dart';
-import 'package:flutter_unisafe/pages/student/profile.dart';
-import 'package:flutter_unisafe/pages/student/settings.dart';
+import 'package:unisafe/pages/student/all_reports.dart';
+import 'package:unisafe/pages/student/contact_us.dart';
+import 'package:unisafe/pages/student/feedback.dart';
+import 'package:unisafe/pages/student/profile.dart';
+import 'package:unisafe/pages/student/settings.dart';
 import '../login/google_login_handler.dart';
 import 'resolved_reports.dart';
 import 'recent_reports.dart';
@@ -34,9 +34,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
     _widgetOptions = <Widget>[
       DashboardPage(userCredential: widget.userCredential),
       FeedbackPage(userCredential: widget.userCredential),
-      ProfilePage(
-        userCredential: widget.userCredential,
-      ),
+      ProfilePage(userCredential: widget.userCredential),
     ];
   }
 
@@ -50,36 +48,24 @@ class _StudentHomePageState extends State<StudentHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange.withOpacity(0.7),
+        backgroundColor: Colors.orange.withValues(alpha: 0.7),
         centerTitle: true,
-        title: const Text(
-          'UNISAFE',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: const Text('UNISAFE', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       drawer: _buildDrawer(context),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         // fixedColor: Colors.orange.withOpacity(0.2),
-        backgroundColor: Colors.grey.withOpacity(0.2),
+        backgroundColor: Colors.grey.withValues(alpha: 0.2),
         type: BottomNavigationBarType.fixed,
 
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.feedback_sharp),
-            label: 'Feedback',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
+          BottomNavigationBarItem(icon: Icon(Icons.feedback_sharp), label: 'Feedback'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.deepOrange.withOpacity(0.9),
+        selectedItemColor: Colors.deepOrange.withValues(alpha: 0.9),
         onTap: _onItemTapped,
       ),
     );
@@ -111,19 +97,11 @@ class _StudentHomePageState extends State<StudentHomePage> {
               ),
               currentAccountPicture: CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(
-                  widget.userCredential.value.user!.photoURL!.toString(),
-                ),
+                backgroundImage: NetworkImage(widget.userCredential.value.user!.photoURL!.toString()),
               ),
               decoration: BoxDecoration(
                 color: Colors.orange.shade700,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 5,
-                    spreadRadius: 5,
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 5, spreadRadius: 5)],
               ),
             ),
             _buildDrawerItem(
@@ -133,30 +111,19 @@ class _StudentHomePageState extends State<StudentHomePage> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => StudentSettingsPage(
-                      userCredential: widget.userCredential,
-                    ),
-                  ),
+                  MaterialPageRoute(builder: (context) => StudentSettingsPage(userCredential: widget.userCredential)),
                 );
               },
-              color: Colors.orange
-                  .shade600, // Change the color of the icon and text to a darker shade of orange
+              color: Colors.orange.shade600, // Change the color of the icon and text to a darker shade of orange
             ),
             _buildDrawerItem(
               icon: Icons.contacts,
               text: 'Contact Us',
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ContactUsPage(),
-                  ),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const ContactUsPage()));
               },
-              color: Colors.orange
-                  .shade600, // Change the color of the icon and text to a darker shade of orange
+              color: Colors.orange.shade600, // Change the color of the icon and text to a darker shade of orange
             ),
             _buildDrawerItem(
               icon: Icons.logout,
@@ -166,22 +133,13 @@ class _StudentHomePageState extends State<StudentHomePage> {
                 bool result = await signOutFromGoogle();
                 if (result) widget.userCredential.value = '';
               },
-              color: Colors.orange
-                  .shade600, // Change the color of the icon and text to a darker shade of orange
+              color: Colors.orange.shade600, // Change the color of the icon and text to a darker shade of orange
             ),
             ListTile(
-              leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...themeSwitchWithIcons(context),
-                ],
-              ),
+              leading: Row(mainAxisSize: MainAxisSize.min, children: [...themeSwitchWithIcons(context)]),
               title: Text(
                 'Theme',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.orange.shade600,
-                    fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, color: Colors.orange.shade600, fontWeight: FontWeight.bold),
               ),
               onTap: () async {},
               // tileColor: Colors.orange
@@ -193,20 +151,12 @@ class _StudentHomePageState extends State<StudentHomePage> {
     );
   }
 
-  Widget _buildDrawerItem({
-    required IconData icon,
-    required String text,
-    required GestureTapCallback onTap,
-    required Color color,
-  }) {
+  Widget _buildDrawerItem({required IconData icon, required String text, required GestureTapCallback onTap, required Color color}) {
     return ListTile(
       leading: Icon(icon),
       title: Text(
         text,
-        style: TextStyle(
-          color: color,
-          fontWeight: FontWeight.bold,
-        ),
+        style: TextStyle(color: color, fontWeight: FontWeight.bold),
       ),
       onTap: onTap,
     );
@@ -226,39 +176,22 @@ class _DashboardPageState extends State<DashboardPage> {
   void navigateToPage(BuildContext context, int index) {
     switch (index) {
       case 0:
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => FileReportPage(
-              userCredential: widget.userCredential,
-            ),
-          ),
-        );
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => FileReportPage(userCredential: widget.userCredential)));
         break;
       case 1:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const SupportPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const SupportPage()));
         break;
       case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MyReportsPage(
-              userCredential: widget.userCredential,
-            ),
-          ),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MyReportsPage(userCredential: widget.userCredential)));
         break;
       case 3:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const TipsPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const TipsPage()));
         break;
       case 4:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => StoriesPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StoriesPage()));
         break;
       case 5:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => FAQPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => FAQPage()));
         break;
       default:
         break;
@@ -269,22 +202,10 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     final List<Widget> cards = [
       _buildCard(context, Icons.donut_large, 'Recent Reports', () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => RecentReportsPage(
-                    userCredential: widget.userCredential,
-                  )),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => RecentReportsPage(userCredential: widget.userCredential)));
       }),
       _buildCard(context, Icons.star, 'All reports', () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => AllReportsPage(
-                    userCredential: widget.userCredential,
-                  )),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => AllReportsPage(userCredential: widget.userCredential)));
       }),
     ];
 
@@ -294,10 +215,7 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           SizedBox(
             height: 150,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: cards,
-            ),
+            child: ListView(scrollDirection: Axis.horizontal, children: cards),
           ),
           const SizedBox(height: 25),
           Expanded(
@@ -313,33 +231,20 @@ class _DashboardPageState extends State<DashboardPage> {
                   Icons.library_add,
                   Icons.help,
                 ];
-                final List<String> labels = [
-                  'Report Incident',
-                  'Support',
-                  'Resolved Reports',
-                  'Anonymous Tip',
-                  'Stories',
-                  'FAQ',
-                ];
+                final List<String> labels = ['Report Incident', 'Support', 'Resolved Reports', 'Anonymous Tip', 'Stories', 'FAQ'];
 
                 IconData icon = icons[index];
                 String label = labels[index];
 
                 return Card(
-                  color: Colors.deepOrange.withOpacity(0.7),
+                  color: Colors.deepOrange.withValues(alpha: 0.7),
                   elevation: 20,
                   shadowColor: Colors.deepOrange,
                   child: InkWell(
                     onTap: () {
                       navigateToPage(context, index);
                     },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(icon, size: 50),
-                        Text(label),
-                      ],
-                    ),
+                    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(icon, size: 50), Text(label)]),
                   ),
                 );
               }),
@@ -350,17 +255,15 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildCard(
-      BuildContext context, IconData icon, String label, VoidCallback onTap) {
-    double cardWidth =
-        MediaQuery.of(context).size.width * 0.50; // Adjust this value as needed
+  Widget _buildCard(BuildContext context, IconData icon, String label, VoidCallback onTap) {
+    double cardWidth = MediaQuery.of(context).size.width * 0.50; // Adjust this value as needed
 
     return SizedBox(
       width: cardWidth,
       child: InkWell(
         onTap: onTap,
         child: Card(
-          color: const Color.fromARGB(255, 255, 115, 0).withOpacity(0.7),
+          color: const Color.fromARGB(255, 255, 115, 0).withValues(alpha: 0.7),
           elevation: 20,
           shadowColor: const Color.fromARGB(255, 255, 115, 0),
           child: Column(
@@ -369,12 +272,7 @@ class _DashboardPageState extends State<DashboardPage> {
               Icon(icon, size: 40),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
+                child: Text(label, style: const TextStyle(fontSize: 16)),
               ),
             ],
           ),
