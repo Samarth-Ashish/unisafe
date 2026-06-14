@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:unisafe/pages/student/report_widgets.dart';
+import 'package:unisafe/utils/user_helpers.dart';
 
 class RecentReportsPage extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
   const RecentReportsPage({super.key, required this.userCredential});
 
   @override
@@ -44,7 +46,7 @@ class _RecentReportsPageState extends State<RecentReportsPage> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('reports')
-            .where('reportedFromEmail', isEqualTo: widget.userCredential.value.user!.email!.toString())
+            .where('reportedFromEmail', isEqualTo: getUserEmail(widget.userCredential.value))
             .orderBy('submittedAt', descending: true)
             .limit(1) // Get only the first document (latest)
             .snapshots(),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:unisafe/pages/student/report_widgets.dart';
+import 'package:unisafe/utils/user_helpers.dart';
 
 class AllReportsPage extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
   const AllReportsPage({super.key, required this.userCredential});
 
   @override
@@ -27,7 +29,7 @@ class _AllReportsPageState extends State<AllReportsPage> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('reports')
-          .where('reportedFromEmail', isEqualTo: widget.userCredential.value.user!.email!.toString())
+          .where('reportedFromEmail', isEqualTo: getUserEmail(widget.userCredential.value))
           .orderBy('submittedAt', descending: true)
           .snapshots(),
       builder: (context, snapshot) {

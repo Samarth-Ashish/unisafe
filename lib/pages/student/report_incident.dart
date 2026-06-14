@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:unisafe/models/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:unisafe/utils/user_helpers.dart';
 
 class FileReportPage extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
   const FileReportPage({super.key, required this.userCredential});
 
   @override
@@ -43,7 +45,7 @@ class _FileReportPageState extends State<FileReportPage> {
   Future<void> _submitReport() async {
     if (_formKey.currentState!.validate()) {
       final Map<String, dynamic> data = {
-        'reportedFromEmail': widget.userCredential.value.user!.email!.toString(),
+        'reportedFromEmail': getUserEmail(widget.userCredential.value),
         'name': _nameController.text,
         'email': _emailController.text,
         'reportIncident': _reportController.text,

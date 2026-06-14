@@ -26,7 +26,7 @@ class GoogleSignInScreen extends StatefulWidget {
 }
 
 class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
-  ValueNotifier userCredential = ValueNotifier('');
+  ValueNotifier<UserCredential?> userCredential = ValueNotifier(null);
   int? blockNumber = 0;
   bool isAdmin = false;
 
@@ -41,15 +41,12 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
     return ValueListenableBuilder(
       valueListenable: userCredential,
       builder: (context, value, child) {
-        if (userCredential.value == '' || userCredential.value == null) {
+        if (userCredential.value == null) {
           return SignupPage(userCredential: userCredential);
         } else {
           return FutureBuilder(
-            future: fetchAllowedEmails(
-              userCredential.value.user!.email!.toString(),
-            ),
-            builder:
-                (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+            future: fetchAllowedEmails(userCredential.value?.user?.email ?? ''),
+            builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: Column(
@@ -64,12 +61,9 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
                 return Text('Error: ${snapshot.error}');
               } else {
                 List<String> allowedEmails = snapshot.data!;
-                String currentUserEmail = userCredential.value.user!.email!;
+                String currentUserEmail = userCredential.value?.user?.email ?? '';
                 if (allowedEmails.contains(currentUserEmail)) {
-                  return AdminDashboard(
-                    userCredential: userCredential,
-                    block: blockNumber!,
-                  );
+                  return AdminDashboard(userCredential: userCredential, block: blockNumber!);
                 } else {
                   return StudentHomePage(userCredential: userCredential);
                 }
@@ -83,10 +77,8 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
 
   Future<List<String>> fetchAllowedEmails(String userEmail) async {
     try {
-      CollectionReference adminsCollection =
-          FirebaseFirestore.instance.collection('admins');
-      DocumentSnapshot adminListDoc =
-          await adminsCollection.doc('admin_list').get();
+      CollectionReference adminsCollection = FirebaseFirestore.instance.collection('admins');
+      DocumentSnapshot adminListDoc = await adminsCollection.doc('admin_list').get();
 
       Map<String, dynamic>? adminEmailsMap = adminListDoc['admins_with_block'];
 
@@ -109,21 +101,15 @@ Future<UserCredential?> signInWithGoogle() async {
     await _ensureInitialized();
 
     // v7: authenticate() replaces signIn()
-    final GoogleSignInAccount googleUser = await _googleSignIn.authenticate(
-      scopeHint: ['email'],
-    );
+    final GoogleSignInAccount googleUser = await _googleSignIn.authenticate(scopeHint: ['email']);
 
     // v7: authentication is now synchronous (no await)
     final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
     // Get access token via authorizationClient
-    final authorization = await _googleSignIn.authorizationClient
-        .authorizationForScopes(['email']);
+    final authorization = await _googleSignIn.authorizationClient.authorizationForScopes(['email']);
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: authorization?.accessToken,
-      idToken: googleAuth.idToken,
-    );
+    final credential = GoogleAuthProvider.credential(accessToken: authorization?.accessToken, idToken: googleAuth.idToken);
 
     return await FirebaseAuth.instance.signInWithCredential(credential);
   } on GoogleSignInException catch (e) {
@@ -137,10 +123,7 @@ Future<UserCredential?> signInWithGoogle() async {
 
 Future<bool> checkIfAdmin(String userEmail) async {
   try {
-    DocumentSnapshot adminSnapshot = await FirebaseFirestore.instance
-        .collection('admins')
-        .doc('admin_list')
-        .get();
+    DocumentSnapshot adminSnapshot = await FirebaseFirestore.instance.collection('admins').doc('admin_list').get();
 
     if (adminSnapshot.exists) {
       List<dynamic> adminEmails = adminSnapshot['admins_with_block'];

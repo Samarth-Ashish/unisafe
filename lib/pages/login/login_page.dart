@@ -1,9 +1,10 @@
 //login_page.dart
 import 'package:flutter/material.dart';
 import 'google_login_handler.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupPage extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
   const SignupPage({super.key, required this.userCredential});
 
   @override
@@ -43,18 +44,13 @@ class _SignupPageState extends State<SignupPage> {
                   const Text(
                     // "Sign up",
                     "Welcome to UniSafe",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  //
-                  //
-                  //
+                  const SizedBox(height: 20),
 
+                  //
+                  //
+                  //
                   ShaderMask(
                     shaderCallback: (rect) {
                       // Create a radial gradient for a more natural fading effect
@@ -62,23 +58,14 @@ class _SignupPageState extends State<SignupPage> {
                         center: Alignment.center,
                         radius: 0.55, // Adjust radius for desired fade distance
                         colors: [
-                          Colors.black.withOpacity(
-                              0.8), // Adjust opacity for blur strength
+                          Colors.black.withValues(alpha: 0.8), // Adjust opacity for blur strength
                           Colors.transparent,
                         ],
-                        stops: const [
-                          0.5,
-                          1.0
-                        ], // Evenly distribute color transitions
-                      ).createShader(
-                          Rect.fromLTRB(0, 0, rect.width, rect.height));
+                        stops: const [0.5, 1.0], // Evenly distribute color transitions
+                      ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
                     },
                     blendMode: BlendMode.dstIn,
-                    child: Image.asset(
-                      'assets/images/unisafeLogo.jpg',
-                      height: 400,
-                      fit: BoxFit.contain,
-                    ),
+                    child: Image.asset('assets/images/unisafeLogo.jpg', height: 400, fit: BoxFit.contain),
                   ),
                   //
                   //
@@ -156,12 +143,10 @@ class _SignupPageState extends State<SignupPage> {
                 height: 45,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
-                  border: Border.all(
-                    color: Colors.purple,
-                  ),
+                  border: Border.all(color: Colors.purple),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                       spreadRadius: 1,
                       blurRadius: 1,
                       offset: const Offset(0, 1), // changes position of shadow
@@ -176,42 +161,38 @@ class _SignupPageState extends State<SignupPage> {
                     // if (widget.userCredential.value != null) {
                     //   debugPrint(widget.userCredential.value['userCredential'].user!.email);
                     // }
-                    widget.userCredential.value = await signInWithGoogle();
-                    // widget.isAdmin.value = await checkIfAdmin(widget.userCredential.value.user!.email);
-                    if (widget.userCredential.value != null ||
-                        widget.userCredential == ValueNotifier(null)) {
-                      debugPrint(
-                          "\n Logged In using \n\n ======= ${widget.userCredential.value.user!.email} \n============");
+                    final result = await signInWithGoogle();
+                    if (result != null)
+                      widget.userCredential.value =
+                          result; // widget.isAdmin.value = await checkIfAdmin(widget.userCredential.value.user!.email);
+                    if (widget.userCredential.value != null || widget.userCredential == ValueNotifier(null)) {
+                      debugPrint("\n Logged In using \n\n ======= ${widget.userCredential.value?.user?.email ?? ''} \n============");
                     }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                          height: 40.0,
-                          width: 40.0,
-                          decoration: const BoxDecoration(
-                            // image: DecorationImage(image: AssetImage('assets/images/download.png'), fit: BoxFit.cover),
-
-                            shape: BoxShape.circle,
-                          ),
-                          // child: Image.network(
-                          //   'http://pngimg.com/uploads/google/google_PNG19635.png',
-                          //   fit: BoxFit.cover,
-                          // ), //changed
-                          child: Image.asset(
-                            'assets/images/google.png',
-                            // height: 400,
-                            fit: BoxFit.cover,
-                          )),
+                        height: 40.0,
+                        width: 40.0,
+                        decoration: const BoxDecoration(
+                          // image: DecorationImage(image: AssetImage('assets/images/download.png'), fit: BoxFit.cover),
+                          shape: BoxShape.circle,
+                        ),
+                        // child: Image.network(
+                        //   'http://pngimg.com/uploads/google/google_PNG19635.png',
+                        //   fit: BoxFit.cover,
+                        // ), //changed
+                        child: Image.asset(
+                          'assets/images/google.png',
+                          // height: 400,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       const SizedBox(width: 18),
                       const Text(
                         "Sign In with Google",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.deepOrange,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: 16, color: Colors.deepOrange, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

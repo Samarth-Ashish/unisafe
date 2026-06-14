@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:unisafe/utils/user_helpers.dart';
 
 class AdminManagementPage extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
 
-  const AdminManagementPage({
-    super.key,
-    required this.userCredential,
-  });
+  const AdminManagementPage({super.key, required this.userCredential});
   @override
   State<AdminManagementPage> createState() => _AdminManagementPageState();
 }
@@ -16,11 +15,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.purple.withOpacity(0.7),
-        centerTitle: true,
-        title: const Text('Admin Management'),
-      ),
+      appBar: AppBar(backgroundColor: Colors.purple.withValues(alpha: 0.7), centerTitle: true, title: const Text('Admin Management')),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('admins').snapshots(),
         builder: (context, snapshot) {
@@ -31,13 +26,9 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
             return const Center(child: Text('No admins found'));
           }
 
-          Map adminMap = snapshot.data!.docs[0]['admins_with_block']
-              as Map<String, dynamic>;
+          Map adminMap = snapshot.data!.docs[0]['admins_with_block'] as Map<String, dynamic>;
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: buildAdminList(adminMap),
-          );
+          return Padding(padding: const EdgeInsets.all(16.0), child: buildAdminList(adminMap));
         },
       ),
       floatingActionButton: buildAddAdminButton(context),
@@ -50,7 +41,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
         _showAddAdminDialog(context);
       },
       tooltip: 'Add Admin',
-      backgroundColor: Colors.purple.withOpacity(0.7),
+      backgroundColor: Colors.purple.withValues(alpha: 0.7),
       child: const Icon(Icons.add),
     );
   }
@@ -74,11 +65,8 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
@@ -88,8 +76,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
                     }
-                    String pattern =
-                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                    String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
                     RegExp regex = RegExp(pattern);
                     if (!regex.hasMatch(value)) {
                       return 'Please enter a valid email address';
@@ -101,11 +88,8 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Block',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
@@ -149,46 +133,41 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
         .doc('admin_list')
         .get()
         .then((docSnapshot) {
-      if (docSnapshot.exists) {
-        Map<String, dynamic> adminMap =
-            docSnapshot.data()!['admins_with_block'] ?? {};
-        adminMap[email] = block;
-        FirebaseFirestore.instance
-            .collection('admins')
-            .doc('admin_list')
-            .update({'admins_with_block': adminMap}).then((_) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Admin added successfully'),
-            duration: Duration(seconds: 2),
-          ));
-        }).catchError((error) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Failed to add admin: $error'),
-            duration: const Duration(seconds: 2),
-          ));
+          if (docSnapshot.exists) {
+            Map<String, dynamic> adminMap = docSnapshot.data()!['admins_with_block'] ?? {};
+            adminMap[email] = block;
+            FirebaseFirestore.instance
+                .collection('admins')
+                .doc('admin_list')
+                .update({'admins_with_block': adminMap})
+                .then((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('Admin added successfully'), duration: Duration(seconds: 2)));
+                })
+                .catchError((error) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Failed to add admin: $error'), duration: const Duration(seconds: 2)));
+                });
+          } else {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Admin list not found'), duration: Duration(seconds: 2)));
+          }
+        })
+        .catchError((error) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Failed to fetch admin list: $error'), duration: const Duration(seconds: 2)));
         });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Admin list not found'),
-          duration: Duration(seconds: 2),
-        ));
-      }
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to fetch admin list: $error'),
-        duration: const Duration(seconds: 2),
-      ));
-    });
   }
 
   Widget buildAdminList(Map adminMap) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          'Admins',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
+        const Text('Admins', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
         Expanded(
           child: ListView.builder(
@@ -208,29 +187,22 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
   }
 
   Widget buildAdminCard(String email, int block, VoidCallback onDelete) {
-    return (email != widget.userCredential.value.user!.email!.toString())
+    return (email != getUserEmail(widget.userCredential.value))
         ? Card(
             elevation: 6,
-            shadowColor: Colors.purple.withOpacity(0.8),
+            shadowColor: Colors.purple.withValues(alpha: 0.8),
             margin: const EdgeInsets.symmetric(vertical: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             child: ListTile(
               title: Text(email),
               subtitle: Text('Block: $block'),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                color: Colors.red.withOpacity(0.8),
-                onPressed: onDelete,
-              ),
+              trailing: IconButton(icon: const Icon(Icons.delete), color: Colors.red.withValues(alpha: 0.8), onPressed: onDelete),
             ),
           )
         : const SizedBox.shrink();
   }
 
-  Future<void> _showDeleteConfirmationDialog(
-      BuildContext context, String email) async {
+  Future<void> _showDeleteConfirmationDialog(BuildContext context, String email) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -246,12 +218,7 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
                   //   fontWeight: FontWeight.bold,
                   // ),
                 ),
-                Text(
-                  'Email: $email',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text('Email: $email', style: const TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -281,35 +248,33 @@ class _AdminManagementPageState extends State<AdminManagementPage> {
         .doc('admin_list')
         .get()
         .then((docSnapshot) {
-      if (docSnapshot.exists) {
-        Map<String, dynamic> adminMap =
-            docSnapshot.data()!['admins_with_block'] ?? {};
-        adminMap.remove(email);
-        FirebaseFirestore.instance
-            .collection('admins')
-            .doc('admin_list')
-            .update({'admins_with_block': adminMap}).then((_) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Admin deleted successfully'),
-            duration: Duration(seconds: 2),
-          ));
-        }).catchError((error) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('Failed to delete admin: $error'),
-            duration: const Duration(seconds: 2),
-          ));
+          if (docSnapshot.exists) {
+            Map<String, dynamic> adminMap = docSnapshot.data()!['admins_with_block'] ?? {};
+            adminMap.remove(email);
+            FirebaseFirestore.instance
+                .collection('admins')
+                .doc('admin_list')
+                .update({'admins_with_block': adminMap})
+                .then((_) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('Admin deleted successfully'), duration: Duration(seconds: 2)));
+                })
+                .catchError((error) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Failed to delete admin: $error'), duration: const Duration(seconds: 2)));
+                });
+          } else {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Admin list not found'), duration: Duration(seconds: 2)));
+          }
+        })
+        .catchError((error) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Failed to fetch admin list: $error'), duration: const Duration(seconds: 2)));
         });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Admin list not found'),
-          duration: Duration(seconds: 2),
-        ));
-      }
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Failed to fetch admin list: $error'),
-        duration: const Duration(seconds: 2),
-      ));
-    });
   }
 }

@@ -1,14 +1,16 @@
 //admin_dashboard.dart
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:unisafe/models/theme_provider.dart';
 import 'package:unisafe/pages/admin/admins_management.dart';
 import 'package:unisafe/pages/admin/contact_us.dart';
 import 'package:unisafe/pages/admin/obligations.dart';
+import 'package:unisafe/utils/user_helpers.dart';
 import '../login/google_login_handler.dart';
 import 'student_reports.dart';
 
 class AdminDashboard extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
   final int block;
   const AdminDashboard({super.key, required this.userCredential, required this.block});
 
@@ -35,7 +37,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             children: [
               UserAccountsDrawerHeader(
                 accountName: Text(
-                  widget.userCredential.value.user!.displayName!.toString(),
+                  getUserName(widget.userCredential.value),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -43,7 +45,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                 ),
                 accountEmail: Text(
-                  widget.userCredential.value.user!.email!.toString(),
+                  getUserEmail(widget.userCredential.value),
                   style: const TextStyle(
                     fontSize: 16,
                     // color: Colors.orange
@@ -52,7 +54,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 ),
                 currentAccountPicture: CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage(widget.userCredential.value.user!.photoURL!.toString()),
+                  backgroundImage: NetworkImage(getUserPhoto(widget.userCredential.value)),
+                  onBackgroundImageError: (_, _) {},
+                  child: getUserPhoto(widget.userCredential.value).isEmpty ? const Icon(Icons.person, size: 50) : null,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.green.shade700,
@@ -83,7 +87,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 onTap: () async {
                   Navigator.pop(context); //routes
                   bool result = await signOutFromGoogle();
-                  if (result) widget.userCredential.value = '';
+                  if (result) widget.userCredential.value = null;
                 },
               ),
               ListTile(

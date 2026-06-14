@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:unisafe/utils/user_helpers.dart';
 
 class StudentSettingsPage extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
   const StudentSettingsPage({super.key, required this.userCredential});
 
   @override
@@ -13,11 +15,7 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.orange.withOpacity(0.7),
-        centerTitle: true,
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(backgroundColor: Colors.orange.withValues(alpha: 0.7), centerTitle: true, title: const Text('Settings')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -47,24 +45,14 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
   Widget _buildHeader(String text) {
     return Text(
       text,
-      style: const TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
-        color: Colors.orange,
-      ),
+      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.orange),
     );
   }
 
-  Widget _buildSettingOption(BuildContext context,
-      {required IconData icon,
-      required String label,
-      required VoidCallback onTap}) {
+  Widget _buildSettingOption(BuildContext context, {required IconData icon, required String label, required VoidCallback onTap}) {
     return ListTile(
       leading: Icon(icon, color: Colors.orange),
-      title: Text(
-        label,
-        style: const TextStyle(fontSize: 18),
-      ),
+      title: Text(label, style: const TextStyle(fontSize: 18)),
       trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey),
       onTap: onTap,
     );
@@ -73,8 +61,7 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
   Future<List<Map<String, dynamic>>> _fetchUserReports() async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('reports')
-        .where('reportedFromEmail',
-            isEqualTo: widget.userCredential.value.user!.email!.toString())
+        .where('reportedFromEmail', isEqualTo: getUserEmail(widget.userCredential.value))
         .orderBy('submittedAt', descending: true)
         .get();
     return querySnapshot.docs.map((doc) {
@@ -118,20 +105,15 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
                   title: const Text('Delete a report'),
                   content: DropdownButtonFormField<String>(
                     isExpanded: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Select Report',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Select Report'),
                     items: userReports.map((report) {
                       return DropdownMenuItem<String>(
                         value: report['id'],
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              report['reportIncident'],
-                              overflow: TextOverflow.visible,
-                            ),
-                            Divider(color: Colors.grey.withOpacity(0.2)),
+                            Text(report['reportIncident'], overflow: TextOverflow.visible),
+                            Divider(color: Colors.grey.withValues(alpha: 0.2)),
                           ],
                         ),
                       );
@@ -143,10 +125,7 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
                     },
                     selectedItemBuilder: (BuildContext context) {
                       return userReports.map<Widget>((report) {
-                        return Text(
-                          report['reportIncident'],
-                          overflow: TextOverflow.ellipsis,
-                        );
+                        return Text(report['reportIncident'], overflow: TextOverflow.ellipsis);
                       }).toList();
                     },
                   ),
@@ -161,13 +140,8 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
                       child: const Text('Delete'),
                       onPressed: () async {
                         if (selectedReportId != null) {
-                          await FirebaseFirestore.instance
-                              .collection('reports')
-                              .doc(selectedReportId)
-                              .delete();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Report deleted')),
-                          );
+                          await FirebaseFirestore.instance.collection('reports').doc(selectedReportId).delete();
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report deleted')));
                           Navigator.of(context).pop();
                         }
                       },
@@ -184,70 +158,61 @@ class _StudentSettingsPageState extends State<StudentSettingsPage> {
 
   void _showDeleteAllReportsDialog(BuildContext context) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return FutureBuilder<List<Map<String, dynamic>>>(
-            future: _fetchUserReports(),
-            builder: (context, snapshot) {
-              //
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
+      context: context,
+      builder: (BuildContext context) {
+        return FutureBuilder<List<Map<String, dynamic>>>(
+          future: _fetchUserReports(),
+          builder: (context, snapshot) {
+            //
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return AlertDialog(
-                  title: const Text('Delete All Reports'),
-                  content: const Text('No reports found.'),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('Close'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              }
-
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return AlertDialog(
                 title: const Text('Delete All Reports'),
-                content: const Text(
-                    'Are you sure you want to delete all your reports? This action cannot be undone.'),
+                content: const Text('No reports found.'),
                 actions: <Widget>[
                   TextButton(
-                    child: const Text('Cancel'),
+                    child: const Text('Close'),
                     onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    child: const Text('Delete All'),
-                    onPressed: () async {
-                      QuerySnapshot reportsSnapshot = await FirebaseFirestore
-                          .instance
-                          .collection('reports')
-                          .where('reportedFromEmail',
-                              isEqualTo: widget
-                                  .userCredential.value.user!.email!
-                                  .toString())
-                          .orderBy('submittedAt', descending: true)
-                          .get();
-                      for (DocumentSnapshot doc in reportsSnapshot.docs) {
-                        await FirebaseFirestore.instance
-                            .collection('reports')
-                            .doc(doc.id)
-                            .delete();
-                      }
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('All reports deleted')),
-                      );
                       Navigator.of(context).pop();
                     },
                   ),
                 ],
               );
-            },
-          );
-        });
+            }
+
+            return AlertDialog(
+              title: const Text('Delete All Reports'),
+              content: const Text('Are you sure you want to delete all your reports? This action cannot be undone.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('Delete All'),
+                  onPressed: () async {
+                    QuerySnapshot reportsSnapshot = await FirebaseFirestore.instance
+                        .collection('reports')
+                        .where('reportedFromEmail', isEqualTo: getUserEmail(widget.userCredential.value))
+                        .orderBy('submittedAt', descending: true)
+                        .get();
+                    for (DocumentSnapshot doc in reportsSnapshot.docs) {
+                      await FirebaseFirestore.instance.collection('reports').doc(doc.id).delete();
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('All reports deleted')));
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:unisafe/models/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 class FeedbackPage extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
   const FeedbackPage({super.key, required this.userCredential});
 
   @override
@@ -32,7 +33,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       final Email email = Email(
         body:
             'Feedback:\n ${_feedbackController.text} \n\n- Contact email: ${_emailController.text}\n- Contact number: ${_phoneController.text}',
-        subject: 'Feedback by ${_nameController.text}', //- (${widget.userCredential.value.user!.email!.toString()})',
+        subject: 'Feedback by ${_nameController.text}', //- (${getUserEmail(widget.userCredential.value)})',
         recipients: ['unisafelpu@gmail.com'],
         // attachmentPaths: attachments,
         isHTML: false,

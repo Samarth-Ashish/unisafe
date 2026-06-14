@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:unisafe/pages/student/all_reports.dart';
 import 'package:unisafe/pages/student/contact_us.dart';
 import 'package:unisafe/pages/student/feedback.dart';
 import 'package:unisafe/pages/student/profile.dart';
 import 'package:unisafe/pages/student/settings.dart';
+import 'package:unisafe/utils/user_helpers.dart';
 import '../login/google_login_handler.dart';
 import 'resolved_reports.dart';
 import 'recent_reports.dart';
@@ -15,7 +17,7 @@ import 'support_contacts.dart';
 import '../../models/theme_provider.dart';
 
 class StudentHomePage extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
   const StudentHomePage({super.key, required this.userCredential});
 
   @override
@@ -80,7 +82,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
           children: [
             UserAccountsDrawerHeader(
               accountName: Text(
-                widget.userCredential.value.user!.displayName!.toString(),
+                getUserName(widget.userCredential.value),
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -88,7 +90,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
                 ),
               ),
               accountEmail: Text(
-                widget.userCredential.value.user!.email!.toString(),
+                getUserEmail(widget.userCredential.value),
                 style: const TextStyle(
                   fontSize: 16,
                   // color: Colors.orange
@@ -97,7 +99,9 @@ class _StudentHomePageState extends State<StudentHomePage> {
               ),
               currentAccountPicture: CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(widget.userCredential.value.user!.photoURL!.toString()),
+                backgroundImage: NetworkImage(getUserPhoto(widget.userCredential.value)),
+                onBackgroundImageError: (_, _) {},
+                child: getUserPhoto(widget.userCredential.value).isEmpty ? const Icon(Icons.person, size: 50) : null,
               ),
               decoration: BoxDecoration(
                 color: Colors.orange.shade700,
@@ -131,7 +135,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
               onTap: () async {
                 Navigator.pop(context);
                 bool result = await signOutFromGoogle();
-                if (result) widget.userCredential.value = '';
+                if (result) widget.userCredential.value = null;
               },
               color: Colors.orange.shade600, // Change the color of the icon and text to a darker shade of orange
             ),
@@ -164,7 +168,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
 }
 
 class DashboardPage extends StatefulWidget {
-  final ValueNotifier userCredential;
+  final ValueNotifier<UserCredential?> userCredential;
   const DashboardPage({super.key, required this.userCredential});
 
   @override
