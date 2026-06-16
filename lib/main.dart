@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'pages/login/google_login_handler.dart';
 import 'package:provider/provider.dart';
-import 'models/theme_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'core/auth_session.dart';
+import 'view/screens/auth_gate.dart';
+import 'core/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +21,10 @@ Future<void> main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => ThemeProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => AuthSession()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -37,7 +41,7 @@ class MyApp extends StatelessWidget {
           theme: themeProvider.currentTheme,
           debugShowCheckedModeBanner: false,
           title: 'Flutter Firebase Web App',
-          home: const GoogleSignInScreen(),
+          home: const AuthGate(),
         );
       },
     );
