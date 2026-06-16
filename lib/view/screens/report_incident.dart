@@ -1,9 +1,296 @@
+// import 'package:flutter/material.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:unisafe/core/theme_provider.dart';
+// import 'package:provider/provider.dart';
+// import 'package:unisafe/core/auth_session.dart';
+// import 'package:unisafe/core/user_info_extensions.dart';
+
+// class ReportIncidentPage extends StatefulWidget {
+//   const ReportIncidentPage({super.key});
+
+//   @override
+//   State<ReportIncidentPage> createState() => _ReportIncidentPageState();
+// }
+
+// class _ReportIncidentPageState extends State<ReportIncidentPage> {
+//   final _formKey = GlobalKey<FormState>();
+//   final TextEditingController _nameController = TextEditingController();
+//   final TextEditingController _emailController = TextEditingController();
+//   final TextEditingController _reportController = TextEditingController();
+//   final TextEditingController _registrationIdController = TextEditingController();
+//   bool _physicalBully = false;
+//   bool _verbalBully = false;
+//   bool _cyberBully = false;
+//   bool _socialBully = false;
+//   int? _block;
+
+//   @override
+//   void dispose() {
+//     _nameController.dispose();
+//     _emailController.dispose();
+//     _reportController.dispose();
+//     _registrationIdController.dispose();
+//     super.dispose();
+//   }
+
+//   List<DropdownMenuItem<int>> get _dropDownItems {
+//     List<DropdownMenuItem<int>> items = [];
+//     for (int i = 1; i <= 56; i++) {
+//       items.add(DropdownMenuItem(value: i, child: Text('Block $i')));
+//     }
+//     return items;
+//   }
+
+//   Future<void> _submitReport() async {
+//     if (_formKey.currentState!.validate()) {
+//       final Map<String, dynamic> data = {
+//         'reportedFromEmail': context.read<AuthSession>().user.emailOrEmpty,
+//         'name': _nameController.text,
+//         'email': _emailController.text,
+//         'reportIncident': _reportController.text,
+//         'registrationId': _registrationIdController.text,
+//         'physicalBullying': _physicalBully,
+//         'verbalBullying': _verbalBully,
+//         'cyberBullying': _cyberBully,
+//         'socialBullying': _socialBully,
+//         'decisionPending': true,
+//         'block': _block,
+//         'submittedAt': Timestamp.now(),
+//       };
+
+//       try {
+//         await FirebaseFirestore.instance.collection('reports').add(data);
+//         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report submitted successfully')));
+//         Navigator.pop(context);
+//       } catch (e) {
+//         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to submit report: $e')));
+//       }
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(centerTitle: true, backgroundColor: Colors.deepOrange.withValues(alpha: 0.7), title: const Text('Report Incident')),
+//       body: Container(
+//         // padding: const EdgeInsets.all(8.0),
+//         padding: const EdgeInsets.all(8),
+
+//         child: Form(
+//           key: _formKey,
+//           child: Column(
+//             children: <Widget>[
+//               Expanded(
+//                 child: SingleChildScrollView(
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: <Widget>[
+//                       const SizedBox(height: 5),
+//                       _buildTextField(
+//                         controller: _registrationIdController,
+//                         label: 'Registration ID',
+//                         keyboardType: TextInputType.number,
+//                         validator: (value) {
+//                           if (value == null || value.isEmpty) {
+//                             return 'Please enter the registration ID';
+//                           }
+//                           return null;
+//                         },
+//                       ),
+//                       const SizedBox(height: 10),
+//                       _buildTextField(
+//                         controller: _nameController,
+//                         label: 'Name',
+//                         keyboardType: TextInputType.text,
+//                         validator: (value) {
+//                           if (value == null || value.isEmpty) {
+//                             return 'Please enter your name';
+//                           }
+//                           return null;
+//                         },
+//                       ),
+//                       const SizedBox(height: 10),
+//                       _buildTextField(
+//                         controller: _emailController,
+//                         label: 'Email',
+//                         keyboardType: TextInputType.emailAddress,
+//                         validator: (value) {
+//                           if (value == null || value.isEmpty) {
+//                             return 'Please enter your email';
+//                           }
+//                           String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+//                           RegExp regex = RegExp(pattern);
+//                           if (!regex.hasMatch(value)) {
+//                             return 'Please enter a valid email address';
+//                           }
+//                           return null;
+//                         },
+//                       ),
+//                       const SizedBox(height: 10),
+//                       _buildTextField(
+//                         controller: _reportController,
+//                         label: 'Report Incident',
+//                         keyboardType: TextInputType.multiline,
+//                         maxLines: 5,
+//                         validator: (value) {
+//                           if (value == null || value.isEmpty) {
+//                             return 'Please enter the incident details';
+//                           }
+//                           return null;
+//                         },
+//                       ),
+//                       const SizedBox(height: 10),
+//                       _buildDropdownField(),
+//                       const SizedBox(height: 10),
+//                       _buildCheckboxListTile(
+//                         title: 'Physical Bullying',
+//                         value: _physicalBully,
+//                         onChanged: (bool? value) {
+//                           setState(() {
+//                             _physicalBully = value!;
+//                           });
+//                         },
+//                       ),
+//                       _buildCheckboxListTile(
+//                         title: 'Verbal Bullying',
+//                         value: _verbalBully,
+//                         onChanged: (bool? value) {
+//                           setState(() {
+//                             _verbalBully = value!;
+//                           });
+//                         },
+//                       ),
+//                       _buildCheckboxListTile(
+//                         title: 'Cyber Bullying',
+//                         value: _cyberBully,
+//                         onChanged: (bool? value) {
+//                           setState(() {
+//                             _cyberBully = value!;
+//                           });
+//                         },
+//                       ),
+//                       _buildCheckboxListTile(
+//                         title: 'Social Bullying',
+//                         value: _socialBully,
+//                         onChanged: (bool? value) {
+//                           setState(() {
+//                             _socialBully = value!;
+//                           });
+//                         },
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                 children: [
+//                   ElevatedButton(
+//                     style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepOrange.withValues(alpha: 0.8))),
+//                     onPressed: _submitReport,
+//                     child: Text(
+//                       'Save & Submit',
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black,
+//                       ),
+//                     ),
+//                   ),
+//                   ElevatedButton(
+//                     style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepOrange.withValues(alpha: 0.8))),
+//                     onPressed: () {
+//                       Navigator.of(context).pop();
+//                     },
+//                     child: Text(
+//                       'Cancel',
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildTextField({
+//     required TextEditingController controller,
+//     required String label,
+//     required TextInputType keyboardType,
+//     required String? Function(String?) validator,
+//     int maxLines = 1,
+//   }) {
+//     return Container(
+//       margin: const EdgeInsets.only(bottom: 6),
+//       decoration: BoxDecoration(
+//         color: context.watch<ThemeProvider>().isDark ? Colors.grey.shade900 : Colors.white,
+//         borderRadius: BorderRadius.circular(20),
+//         boxShadow: [
+//           BoxShadow(color: Colors.deepOrange.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10, offset: const Offset(0, 3)),
+//         ],
+//       ),
+//       child: TextFormField(
+//         controller: controller,
+//         decoration: InputDecoration(
+//           labelText: label,
+//           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+//         ),
+//         keyboardType: keyboardType,
+//         validator: validator,
+//         maxLines: maxLines,
+//       ),
+//     );
+//   }
+
+//   Widget _buildDropdownField() {
+//     return Container(
+//       // margin: const EdgeInsets.only(bottom: 4),
+//       decoration: BoxDecoration(
+//         color: context.watch<ThemeProvider>().isDark ? Colors.grey.shade900 : Colors.white,
+//         borderRadius: BorderRadius.circular(20),
+//         boxShadow: [
+//           BoxShadow(color: Colors.deepOrange.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10, offset: const Offset(0, 3)),
+//         ],
+//       ),
+//       child: DropdownButtonFormField<int>(
+//         initialValue: _block,
+//         items: _dropDownItems,
+//         onChanged: (int? value) {
+//           setState(() {
+//             _block = value!;
+//           });
+//         },
+//         decoration: InputDecoration(
+//           labelText: 'Block',
+//           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+//           contentPadding: const EdgeInsets.all(10.0),
+//         ),
+//         validator: (value) {
+//           if (value == null) {
+//             return 'Please select a block';
+//           }
+//           return null;
+//         },
+//       ),
+//     );
+//   }
+
+//   Widget _buildCheckboxListTile({required String title, required bool value, required ValueChanged<bool?> onChanged}) {
+//     return CheckboxListTile(title: Text(title), value: value, onChanged: onChanged);
+//   }
+// }
+
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:unisafe/core/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:unisafe/core/auth_session.dart';
+import 'package:unisafe/core/theme_provider.dart';
 import 'package:unisafe/core/user_info_extensions.dart';
+import 'package:unisafe/view_model/report_viewmodel.dart';
 
 class ReportIncidentPage extends StatefulWidget {
   const ReportIncidentPage({super.key});
@@ -14,15 +301,10 @@ class ReportIncidentPage extends StatefulWidget {
 
 class _ReportIncidentPageState extends State<ReportIncidentPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _reportController = TextEditingController();
-  final TextEditingController _registrationIdController = TextEditingController();
-  bool _physicalBully = false;
-  bool _verbalBully = false;
-  bool _cyberBully = false;
-  bool _socialBully = false;
-  int? _block;
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _reportController = TextEditingController();
+  final _registrationIdController = TextEditingController();
 
   @override
   void dispose() {
@@ -33,94 +315,82 @@ class _ReportIncidentPageState extends State<ReportIncidentPage> {
     super.dispose();
   }
 
-  List<DropdownMenuItem<int>> get _dropDownItems {
-    List<DropdownMenuItem<int>> items = [];
-    for (int i = 1; i <= 56; i++) {
-      items.add(DropdownMenuItem(value: i, child: Text('Block $i')));
-    }
-    return items;
-  }
+  List<DropdownMenuItem<int>> get _dropDownItems => [
+        for (int i = 1; i <= 56; i++)
+          DropdownMenuItem(value: i, child: Text('Block $i')),
+      ];
 
-  Future<void> _submitReport() async {
-    if (_formKey.currentState!.validate()) {
-      final Map<String, dynamic> data = {
-        'reportedFromEmail': context.read<AuthSession>().user.emailOrEmpty,
-        'name': _nameController.text,
-        'email': _emailController.text,
-        'reportIncident': _reportController.text,
-        'registrationId': _registrationIdController.text,
-        'physicalBullying': _physicalBully,
-        'verbalBullying': _verbalBully,
-        'cyberBullying': _cyberBully,
-        'socialBullying': _socialBully,
-        'decisionPending': true,
-        'block': _block,
-        'submittedAt': Timestamp.now(),
-      };
+  Future<void> _submit(ReportViewModel vm) async {
+    if (!_formKey.currentState!.validate()) return;
 
-      try {
-        await FirebaseFirestore.instance.collection('reports').add(data);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report submitted successfully')));
-        Navigator.pop(context);
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to submit report: $e')));
-      }
+    final success = await vm.submitReport(
+      reportedFromEmail: context.read<AuthSession>().user.emailOrEmpty,
+      name: _nameController.text,
+      email: _emailController.text,
+      registrationId: _registrationIdController.text,
+      reportDescription: _reportController.text,
+    );
+
+    if (!mounted) return;
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Report submitted successfully')),
+      );
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed: ${vm.error}')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(centerTitle: true, backgroundColor: Colors.deepOrange.withValues(alpha: 0.7), title: const Text('Report Incident')),
-      body: Container(
-        // padding: const EdgeInsets.all(8.0),
-        padding: const EdgeInsets.all(8),
+    final vm = context.watch<ReportViewModel>();
+    final isDark = context.watch<ThemeProvider>().isDark;
 
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.deepOrange.withValues(alpha: 0.7),
+        title: const Text('Report Incident'),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(8),
         child: Form(
           key: _formKey,
           child: Column(
-            children: <Widget>[
+            children: [
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
+                    children: [
                       const SizedBox(height: 5),
                       _buildTextField(
                         controller: _registrationIdController,
                         label: 'Registration ID',
                         keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the registration ID';
-                          }
-                          return null;
-                        },
+                        isDark: isDark,
+                        validator: (v) => (v == null || v.isEmpty) ? 'Please enter the registration ID' : null,
                       ),
                       const SizedBox(height: 10),
                       _buildTextField(
                         controller: _nameController,
                         label: 'Name',
                         keyboardType: TextInputType.text,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your name';
-                          }
-                          return null;
-                        },
+                        isDark: isDark,
+                        validator: (v) => (v == null || v.isEmpty) ? 'Please enter your name' : null,
                       ),
                       const SizedBox(height: 10),
                       _buildTextField(
                         controller: _emailController,
                         label: 'Email',
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
-                          }
-                          String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-                          RegExp regex = RegExp(pattern);
-                          if (!regex.hasMatch(value)) {
+                        isDark: isDark,
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return 'Please enter your email';
+                          if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(v)) {
                             return 'Please enter a valid email address';
                           }
                           return null;
@@ -131,52 +401,32 @@ class _ReportIncidentPageState extends State<ReportIncidentPage> {
                         controller: _reportController,
                         label: 'Report Incident',
                         keyboardType: TextInputType.multiline,
+                        isDark: isDark,
                         maxLines: 5,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the incident details';
-                          }
-                          return null;
-                        },
+                        validator: (v) => (v == null || v.isEmpty) ? 'Please enter the incident details' : null,
                       ),
                       const SizedBox(height: 10),
-                      _buildDropdownField(),
+                      _buildDropdown(vm, isDark),
                       const SizedBox(height: 10),
-                      _buildCheckboxListTile(
-                        title: 'Physical Bullying',
-                        value: _physicalBully,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _physicalBully = value!;
-                          });
-                        },
+                      CheckboxListTile(
+                        title: const Text('Physical Bullying'),
+                        value: vm.physicalBully,
+                        onChanged: (v) => vm.toggleBully('physical', v!),
                       ),
-                      _buildCheckboxListTile(
-                        title: 'Verbal Bullying',
-                        value: _verbalBully,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _verbalBully = value!;
-                          });
-                        },
+                      CheckboxListTile(
+                        title: const Text('Verbal Bullying'),
+                        value: vm.verbalBully,
+                        onChanged: (v) => vm.toggleBully('verbal', v!),
                       ),
-                      _buildCheckboxListTile(
-                        title: 'Cyber Bullying',
-                        value: _cyberBully,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _cyberBully = value!;
-                          });
-                        },
+                      CheckboxListTile(
+                        title: const Text('Cyber Bullying'),
+                        value: vm.cyberBully,
+                        onChanged: (v) => vm.toggleBully('cyber', v!),
                       ),
-                      _buildCheckboxListTile(
-                        title: 'Social Bullying',
-                        value: _socialBully,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _socialBully = value!;
-                          });
-                        },
+                      CheckboxListTile(
+                        title: const Text('Social Bullying'),
+                        value: vm.socialBully,
+                        onChanged: (v) => vm.toggleBully('social', v!),
                       ),
                     ],
                   ),
@@ -186,28 +436,20 @@ class _ReportIncidentPageState extends State<ReportIncidentPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepOrange.withValues(alpha: 0.8))),
-                    onPressed: _submitReport,
-                    child: Text(
-                      'Save & Submit',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black,
-                      ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.deepOrange.withValues(alpha: 0.8)),
                     ),
+                    onPressed: vm.isLoading ? null : () => _submit(vm),
+                    child: vm.isLoading
+                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                        : Text('Save & Submit', style: TextStyle(fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black)),
                   ),
                   ElevatedButton(
-                    style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.deepOrange.withValues(alpha: 0.8))),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black,
-                      ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.deepOrange.withValues(alpha: 0.8)),
                     ),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black)),
                   ),
                 ],
               ),
@@ -223,23 +465,19 @@ class _ReportIncidentPageState extends State<ReportIncidentPage> {
     required String label,
     required TextInputType keyboardType,
     required String? Function(String?) validator,
+    required bool isDark,
     int maxLines = 1,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 6),
       decoration: BoxDecoration(
-        color: context.watch<ThemeProvider>().isDark ? Colors.grey.shade900 : Colors.white,
+        color: isDark ? Colors.grey.shade900 : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(color: Colors.deepOrange.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10, offset: const Offset(0, 3)),
-        ],
+        boxShadow: [BoxShadow(color: Colors.deepOrange.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10, offset: const Offset(0, 3))],
       ),
       child: TextFormField(
         controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-        ),
+        decoration: InputDecoration(labelText: label, border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
         keyboardType: keyboardType,
         validator: validator,
         maxLines: maxLines,
@@ -247,40 +485,24 @@ class _ReportIncidentPageState extends State<ReportIncidentPage> {
     );
   }
 
-  Widget _buildDropdownField() {
+  Widget _buildDropdown(ReportViewModel vm, bool isDark) {
     return Container(
-      // margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
-        color: context.watch<ThemeProvider>().isDark ? Colors.grey.shade900 : Colors.white,
+        color: isDark ? Colors.grey.shade900 : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(color: Colors.deepOrange.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10, offset: const Offset(0, 3)),
-        ],
+        boxShadow: [BoxShadow(color: Colors.deepOrange.withValues(alpha: 0.3), spreadRadius: 3, blurRadius: 10, offset: const Offset(0, 3))],
       ),
       child: DropdownButtonFormField<int>(
-        initialValue: _block,
+        value: vm.block,
         items: _dropDownItems,
-        onChanged: (int? value) {
-          setState(() {
-            _block = value!;
-          });
-        },
+        onChanged: (v) => vm.setBlock(v),
         decoration: InputDecoration(
           labelText: 'Block',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
           contentPadding: const EdgeInsets.all(10.0),
         ),
-        validator: (value) {
-          if (value == null) {
-            return 'Please select a block';
-          }
-          return null;
-        },
+        validator: (v) => v == null ? 'Please select a block' : null,
       ),
     );
-  }
-
-  Widget _buildCheckboxListTile({required String title, required bool value, required ValueChanged<bool?> onChanged}) {
-    return CheckboxListTile(title: Text(title), value: value, onChanged: onChanged);
   }
 }

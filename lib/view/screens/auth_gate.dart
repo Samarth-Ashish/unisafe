@@ -19,6 +19,7 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   final AdminDirectoryService _adminDirectory = AdminDirectoryService();
+  Future<Map<String, int>>? _adminMapFuture;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _AuthGateState extends State<AuthGate> {
     final session = context.watch<AuthSession>();
 
     if (!session.isSignedIn) {
+      _adminMapFuture = null;
       return SignInScreen(
         title: 'Welcome to UniSafe',
         logoAssetPath: 'assets/images/unisafeLogo.jpg',
@@ -38,8 +40,10 @@ class _AuthGateState extends State<AuthGate> {
       );
     }
 
+    _adminMapFuture ??= _adminDirectory.fetchAdminBlockMap();
+
     return FutureBuilder<Map<String, int>>(
-      future: _adminDirectory.fetchAdminBlockMap(),
+      future: _adminMapFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(

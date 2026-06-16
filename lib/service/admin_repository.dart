@@ -3,11 +3,7 @@ import 'package:unisafe/model/admin_model.dart';
 import 'base_repository.dart';
 
 class AdminRepository extends BaseRepository<Admin> {
-  AdminRepository({FirebaseFirestore? firestore})
-      : super(
-          firestore: firestore ?? FirebaseFirestore.instance,
-          collectionName: 'admins',
-        );
+  AdminRepository({FirebaseFirestore? firestore}) : super(firestore: firestore ?? FirebaseFirestore.instance, collectionName: 'admins');
 
   /// Fetches the map of admin emails to their assigned block number
   /// Block 0 means super-admin (all blocks)
@@ -34,14 +30,22 @@ class AdminRepository extends BaseRepository<Admin> {
     return adminBlockMap[email];
   }
 
-  /// Add a new admin
+  /// Add or update an admin in the admins_with_block map
   Future<void> addAdmin(Admin admin) async {
-    await add(admin.toMap());
+    try {
+      await firestore.collection(collectionName).doc('admin_list').update({'admins_with_block.${admin.email}': admin.block});
+    } catch (e) {
+      throw Exception('Failed to add admin: $e');
+    }
   }
 
-  /// Update an admin
-  Future<void> updateAdmin(String email, Admin admin) async {
-    await update(email, admin.toMap());
+  /// Delete an admin from the admins_with_block map
+  Future<void> deleteAdmin(String email) async {
+    try {
+      await firestore.collection(collectionName).doc('admin_list').update({'admins_with_block.$email': FieldValue.delete()});
+    } catch (e) {
+      throw Exception('Failed to delete admin: $e');
+    }
   }
 
   /// Get all admins for a specific block

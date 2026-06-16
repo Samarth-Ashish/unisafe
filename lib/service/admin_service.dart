@@ -8,8 +8,7 @@ import 'firestore_service.dart';
 class AdminService extends FirestoreService {
   late final AdminRepository _repository;
 
-  AdminService({FirebaseFirestore? firestore})
-      : super(firestore: firestore) {
+  AdminService({FirebaseFirestore? firestore}) : super(firestore: firestore) {
     _repository = AdminRepository(firestore: firestore);
   }
 
@@ -32,8 +31,7 @@ class AdminService extends FirestoreService {
 
   /// Check if user is super-admin (block 0)
   bool isSuperAdmin(String email, Map<String, int> adminBlockMap) {
-    return _repository.isAdmin(email, adminBlockMap) &&
-        (_repository.getAdminBlock(email, adminBlockMap) ?? -1) == 0;
+    return _repository.isAdmin(email, adminBlockMap) && (_repository.getAdminBlock(email, adminBlockMap) ?? -1) == 0;
   }
 
   /// Check if user can access a specific block
@@ -50,12 +48,9 @@ class AdminService extends FirestoreService {
     return handleFirestoreCall(() => _repository.addAdmin(admin));
   }
 
-  /// Update an admin's block assignment
-  Future<void> updateAdminBlock(String email, int newBlock) async {
-    return handleFirestoreCall(() => _repository.updateAdmin(
-          email,
-          Admin(email: email, block: newBlock),
-        ));
+  /// Delete an admin
+  Future<void> deleteAdmin(String email) async {
+    return handleFirestoreCall(() => _repository.deleteAdmin(email));
   }
 
   /// Get admins for a specific block
