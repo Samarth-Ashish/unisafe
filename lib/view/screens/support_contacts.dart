@@ -18,7 +18,7 @@ class _SupportPageState extends State<SupportPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.deepOrange.withOpacity(0.7),
+        backgroundColor: Colors.deepOrange.withValues(alpha: 0.7),
         title: const Text('Select Block'),
       ),
       body: StreamBuilder<QuerySnapshot>(

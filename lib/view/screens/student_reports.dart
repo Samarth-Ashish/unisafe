@@ -1,36 +1,35 @@
-//get_reports_page.dart
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:unisafe/core/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:unisafe/core/theme_provider.dart';
+import 'package:unisafe/model/report_model.dart';
+import 'package:unisafe/service/report_service.dart';
+import 'package:unisafe/view_model/report_viewmodel.dart';
 
-class StudentReportPage extends StatefulWidget {
+class StudentReportPage extends StatelessWidget {
   final int block;
   const StudentReportPage({super.key, required this.block});
 
   @override
-  State<StudentReportPage> createState() => _StudentReportPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ReportViewModel(ReportService()),
+      child: _StudentReportView(block: block),
+    );
+  }
 }
 
-class _StudentReportPageState extends State<StudentReportPage> {
+class _StudentReportView extends StatelessWidget {
+  final int block;
+  const _StudentReportView({required this.block});
+
   @override
   Widget build(BuildContext context) {
+    final vm = context.read<ReportViewModel>();
+
     return Scaffold(
       appBar: AppBar(centerTitle: true, backgroundColor: Colors.orange.withValues(alpha: 0.7), title: const Text('Student Reports')),
-      body: StreamBuilder<QuerySnapshot>(
-        // stream: FirebaseFirestore.instance.collection('reports').snapshots(),
-        stream: (widget.block == 0)
-            ? FirebaseFirestore.instance
-                  .collection('reports')
-                  .where('decisionPending', isEqualTo: true)
-                  .orderBy('submittedAt', descending: true)
-                  .snapshots()
-            : FirebaseFirestore.instance
-                  .collection('reports')
-                  .where('block', isEqualTo: widget.block)
-                  .where('decisionPending', isEqualTo: true)
-                  .orderBy('submittedAt', descending: true)
-                  .snapshots(),
+      body: StreamBuilder<List<Report>>(
+        stream: vm.getPendingReports(blockFilter: block),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -38,22 +37,14 @@ class _StudentReportPageState extends State<StudentReportPage> {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No reports found'));
-          }
-
-          // debugPrint('FETCHED-----');
+          final reports = snapshot.data ?? [];
+          if (reports.isEmpty) return const Center(child: Text('No reports found'));
 
           return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
+            itemCount: reports.length,
             itemBuilder: (context, index) {
-              var report = snapshot.data!.docs[index];
-              var data = report.data() as Map<String, dynamic>;
-              List<String> bullyingTypes = _getBullyingTypes(data);
-              Timestamp? submittedAt = data['submittedAt'];
-
+              final report = reports[index];
               return Card(
-                // color: Colors.grey.shade800,
                 margin: const EdgeInsets.all(10),
                 elevation: 8,
                 shadowColor: Colors.orange.withValues(alpha: 0.8),
@@ -62,13 +53,13 @@ class _StudentReportPageState extends State<StudentReportPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildInfoRow('Name', data['name']),
-                      _buildInfoRow('Email', data['email']),
-                      _buildInfoRow('Registration ID', data['registrationId']),
-                      _buildInfoRow('Incident', data['reportIncident']),
-                      _buildInfoRow('Bullying Type', bullyingTypes.join(', ')),
-                      _buildInfoRow('Block', data['block']),
-                      submittedAt != null ? _buildInfoRow('Submitted At', _formatTimestamp(submittedAt)) : Container(),
+                      _buildInfoRow(context, 'Name', report.name),
+                      _buildInfoRow(context, 'Email', report.email),
+                      _buildInfoRow(context, 'Registration ID', report.registrationId),
+                      _buildInfoRow(context, 'Incident', report.reportDescription),
+                      _buildInfoRow(context, 'Bullying Type', _getBullyingTypes(report).join(', ')),
+                      _buildInfoRow(context, 'Block', report.block?.toString() ?? '-'),
+                      _buildInfoRow(context, 'Submitted At', _formatDate(report.submittedAt)),
                       const SizedBox(height: 20),
                       Align(
                         alignment: Alignment.centerRight,
@@ -78,14 +69,8 @@ class _StudentReportPageState extends State<StudentReportPage> {
                               context.watch<ThemeProvider>().isDark ? Colors.purple.shade900 : Colors.purple.shade100,
                             ),
                           ),
+                          onPressed: () => context.read<ReportViewModel>().resolveReport(report.id!),
                           child: const Text('Resolve'),
-                          // style: ElevatedButton.styleFrom(
-                          //   primary: Colors.green, // Background color
-                          // ),
-                          onPressed: () async {
-                            debugPrint("Resolved ${report.id.toString()}");
-                            await FirebaseFirestore.instance.collection('reports').doc(report.id).update({'decisionPending': false});
-                          },
                         ),
                       ),
                     ],
@@ -99,34 +84,27 @@ class _StudentReportPageState extends State<StudentReportPage> {
     );
   }
 
-  List<String> _getBullyingTypes(Map<String, dynamic> data) {
-    List<String> types = [];
-    if (data['physicalBullying'] == true) types.add('Physical');
-    if (data['verbalBullying'] == true) types.add('Verbal');
-    if (data['socialBullying'] == true) types.add('Social');
-    if (data['cyberBullying'] == true) types.add('Cyber');
+  List<String> _getBullyingTypes(Report r) {
+    final types = <String>[];
+    if (r.physicalBullying) types.add('Physical');
+    if (r.verbalBullying) types.add('Verbal');
+    if (r.socialBullying) types.add('Social');
+    if (r.cyberBullying) types.add('Cyber');
     return types.isEmpty ? ['No Bullying'] : types;
   }
 
-  String _formatTimestamp(Timestamp timestamp) {
-    DateTime dateTime = timestamp.toDate();
-    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute}';
-  }
+  String _formatDate(DateTime dt) => '${dt.day}/${dt.month}/${dt.year} ${dt.hour}:${dt.minute}';
 
-  Widget _buildInfoRow(String label, dynamic value) {
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: RichText(
         text: TextSpan(
           text: '$label: ',
-          style: TextStyle(
-            fontSize: 16,
-            // fontWeight: FontWeight.bold,
-            color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black,
-          ),
-          children: <TextSpan>[
+          style: TextStyle(fontSize: 16, color: context.watch<ThemeProvider>().isDark ? Colors.white : Colors.black),
+          children: [
             TextSpan(
-              text: value.toString(),
+              text: value,
               style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.orange),
             ),
           ],

@@ -8,8 +8,7 @@ import 'firestore_service.dart';
 class ReportService extends FirestoreService {
   late final ReportRepository _repository;
 
-  ReportService({FirebaseFirestore? firestore})
-      : super(firestore: firestore) {
+  ReportService({FirebaseFirestore? firestore}) : super(firestore: firestore) {
     _repository = ReportRepository(firestore: firestore);
   }
 
@@ -35,42 +34,27 @@ class ReportService extends FirestoreService {
 
   /// Get pending reports for admin
   Stream<List<Report>> getPendingReports({int? blockFilter}) {
-    return handleFirestoreStream(
-      () => _repository.getPendingReportsStream(blockFilter: blockFilter),
-    );
+    return handleFirestoreStream(() => _repository.getPendingReportsStream(blockFilter: blockFilter));
   }
 
   /// Update report decision status
   Future<void> updateReportStatus(String reportId, bool decisionPending) async {
-    return handleFirestoreCall(() => _repository.update(
-          reportId,
-          {'decisionPending': decisionPending},
-        ));
+    return handleFirestoreCall(() => _repository.update(reportId, {'decisionPending': decisionPending}));
   }
 
-  /// Get report count for a user
   Future<int> getUserReportCount(String userEmail) async {
-    return handleFirestoreCall(() async {
-      final query = await firestore
-          .collection('reports')
-          .where('reportedFromEmail', isEqualTo: userEmail)
-          .count()
-          .get();
-      return query.count ?? 0;
-    });
+    return handleFirestoreCall(() => _repository.getUserReportCount(userEmail));
   }
 
-  /// Get pending report count
   Future<int> getPendingReportCount({int? blockFilter}) async {
-    return handleFirestoreCall(() async {
-      Query query = firestore.collection('reports').where('decisionPending', isEqualTo: true);
+    return handleFirestoreCall(() => _repository.getPendingReportCount(blockFilter: blockFilter));
+  }
 
-      if (blockFilter != null && blockFilter != 0) {
-        query = query.where('block', isEqualTo: blockFilter);
-      }
+  Future<void> deleteReport(String reportId) async {
+    return handleFirestoreCall(() => _repository.deleteReport(reportId));
+  }
 
-      final countQuery = await query.count().get();
-      return countQuery.count ?? 0;
-    });
+  Future<void> deleteAllUserReports(String userEmail) async {
+    return handleFirestoreCall(() => _repository.deleteAllUserReports(userEmail));
   }
 }

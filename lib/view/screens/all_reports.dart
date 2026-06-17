@@ -1,56 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:unisafe/view/widgets/report_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:unisafe/core/auth_session.dart';
 import 'package:unisafe/core/user_info_extensions.dart';
+import 'package:unisafe/model/report_model.dart';
+import 'package:unisafe/service/report_service.dart';
+import 'package:unisafe/view/widgets/report_widgets.dart';
+import 'package:unisafe/view_model/report_viewmodel.dart';
 
-class AllReportsPage extends StatefulWidget {
+class AllReportsPage extends StatelessWidget {
   const AllReportsPage({super.key});
 
   @override
-  State<AllReportsPage> createState() => _AllReportsPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(create: (_) => ReportViewModel(ReportService()), child: const _AllReportsView());
+  }
 }
 
-class _AllReportsPageState extends State<AllReportsPage> {
+class _AllReportsView extends StatelessWidget {
+  const _AllReportsView();
+
   @override
   Widget build(BuildContext context) {
+    final userEmail = context.watch<AuthSession>().user.emailOrEmpty;
+    final vm = context.read<ReportViewModel>();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 255, 115, 0).withValues(alpha: 0.7),
         centerTitle: true,
         title: const Text('All Reports'),
       ),
-      body: _buildReportsStream(),
-    );
-  }
-
-  Widget _buildReportsStream() {
-    final userEmail = context.watch<AuthSession>().user.emailOrEmpty;
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('reports')
-          .where('reportedFromEmail', isEqualTo: userEmail)
-          .orderBy('submittedAt', descending: true)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
-        if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+      body: StreamBuilder<List<Report>>(
+        stream: vm.getUserReports(userEmail),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          final reports = snapshot.data ?? [];
+          if (reports.isEmpty) return const Center(child: Text('No reports found'));
           return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              var data = snapshot.data!.docs[index].data() as Map<String, dynamic>;
-              return buildReportCard(context, data);
-            },
+            itemCount: reports.length,
+            itemBuilder: (context, index) => buildReportCard(context, reports[index].toMap()),
           );
-        }
-        return const Center(child: Text('No reports found'));
-      },
+        },
+      ),
     );
   }
 }

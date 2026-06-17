@@ -20,10 +20,18 @@ class ReportViewModel extends ChangeNotifier {
 
   void toggleBully(String type, bool val) {
     switch (type) {
-      case 'physical': physicalBully = val; break;
-      case 'verbal':   verbalBully   = val; break;
-      case 'cyber':    cyberBully    = val; break;
-      case 'social':   socialBully   = val; break;
+      case 'physical':
+        physicalBully = val;
+        break;
+      case 'verbal':
+        verbalBully = val;
+        break;
+      case 'cyber':
+        cyberBully = val;
+        break;
+      case 'social':
+        socialBully = val;
+        break;
     }
     notifyListeners();
   }
@@ -87,15 +95,33 @@ class ReportViewModel extends ChangeNotifier {
     }
   }
 
-  Stream<List<Report>> getUserReports(String email) =>
-      _service.getUserReports(email);
+  Future<bool> deleteReport(String reportId) async {
+    try {
+      await _service.deleteReport(reportId);
+      return true;
+    } catch (e) {
+      error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
 
-  Stream<List<Report>> getRecentReports(String email) =>
-      _service.getRecentReports(email);
+  Future<bool> deleteAllUserReports(String userEmail) async {
+    try {
+      await _service.deleteAllUserReports(userEmail);
+      return true;
+    } catch (e) {
+      error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
 
-  Stream<List<Report>> getResolvedReports(String email) =>
-      _service.getResolvedReports(email);
+  Stream<List<Report>> getUserReports(String email) => _service.getUserReports(email);
 
-  Stream<List<Report>> getPendingReports({int? blockFilter}) =>
-      _service.getPendingReports(blockFilter: blockFilter);
+  Stream<List<Report>> getRecentReports(String email) => _service.getRecentReports(email);
+
+  Stream<List<Report>> getResolvedReports(String email) => _service.getResolvedReports(email);
+
+  Stream<List<Report>> getPendingReports({int? blockFilter}) => _service.getPendingReports(blockFilter: blockFilter);
 }

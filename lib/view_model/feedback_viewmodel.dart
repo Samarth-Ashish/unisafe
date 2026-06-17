@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:unisafe/model/feedback_model.dart';
+import 'package:unisafe/model/feedback_model.dart' as model;
 import 'package:unisafe/service/feedback_service.dart';
 
 class FeedbackViewModel extends ChangeNotifier {
@@ -34,7 +34,7 @@ class FeedbackViewModel extends ChangeNotifier {
       await FlutterEmailSender.send(emailMsg);
 
       // Also persist to Firestore
-      await _service.submitFeedback(Feedback(
+      await _service.submitFeedback(model.Feedback(
         name: name,
         email: email,
         phone: phone,
