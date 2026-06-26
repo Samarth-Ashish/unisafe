@@ -10,7 +10,7 @@ class StoriesPage extends StatelessWidget {
     'Finding Support in School',
     'Taking Action Against Bullying',
     'Empowering the Community',
-    'Promoting Kindness and Inclusivity'
+    'Promoting Kindness and Inclusivity',
   ];
 
   final List<String> _storySummaries = [
@@ -20,7 +20,7 @@ class StoriesPage extends StatelessWidget {
     'In a school where bullying is prevalent, a group of students form an anti-bullying club to provide support and resources to victims. They collaborate with teachers and administrators to implement policies and programs that promote kindness, respect, and inclusivity. Through peer mentoring and awareness campaigns, they create a culture of empathy and understanding.',
     'Concerned citizens mobilize to address bullying in their community by organizing town hall meetings, workshops, and awareness campaigns. They collaborate with local schools, law enforcement agencies, and community organizations to implement anti-bullying initiatives and support services. By working together, they create a safer and more compassionate community for all.',
     'Empowered by their own experiences, survivors of bullying share their stories to raise awareness and inspire change. They advocate for anti-bullying legislation, mental health resources, and educational programs in schools and communities. Through public speaking engagements and media outreach, they challenge stereotypes and promote empathy and acceptance.',
-    'Educators, parents, and students come together to promote kindness, inclusivity, and positive social behaviors in schools and neighborhoods. They organize events, workshops, and service projects to foster empathy, respect, and understanding among individuals of all ages. By modeling kindness and embracing diversity, they create environments where bullying is not tolerated and everyone feels valued and supported.'
+    'Educators, parents, and students come together to promote kindness, inclusivity, and positive social behaviors in schools and neighborhoods. They organize events, workshops, and service projects to foster empathy, respect, and understanding among individuals of all ages. By modeling kindness and embracing diversity, they create environments where bullying is not tolerated and everyone feels valued and supported.',
   ];
 
   final List<String> _storyContents = [
@@ -30,7 +30,7 @@ class StoriesPage extends StatelessWidget {
     'In a school where bullying was prevalent, a group of students decided to create a safe space for victims of bullying. They organized support groups and awareness campaigns to promote kindness and inclusivity. Through their efforts, they fostered a positive environment where students felt empowered to speak out against bullying. The support groups provided victims with a sense of community and validation, while the awareness campaigns helped educate their peers about the importance of empathy and respect.',
     'After witnessing repeated acts of bullying in their community, a group of concerned citizens decided to take action. They organized community meetings, reached out to local authorities, and advocated for anti-bullying policies and programs. Their collective efforts led to positive changes in the community and raised awareness about the importance of combating bullying. By speaking out against bullying and standing up for their neighbors, they helped create a safer and more inclusive environment for everyone.',
     'Empowered by their own experiences, survivors of bullying share their stories to raise awareness and inspire change. They advocate for anti-bullying legislation, mental health resources, and educational programs in schools and communities. Through public speaking engagements and media outreach, they challenge stereotypes and promote empathy and acceptance. They organize events, workshops, and service projects to foster empathy, respect, and understanding among individuals of all ages. By modeling kindness and embracing diversity, they create environments where bullying is not tolerated and everyone feels valued and supported.',
-    'Educators, parents, and students come together to promote kindness, inclusivity, and positive social behaviors in schools and neighborhoods. They organize events, workshops, and service projects to foster empathy, respect, and understanding among individuals of all ages. By modeling kindness and embracing diversity, they create environments where bullying is not tolerated and everyone feels valued and supported. They organize events, workshops, and service projects to foster empathy, respect, and understanding among individuals of all ages. By modeling kindness and embracing diversity, they create environments where bullying is not tolerated and everyone feels valued and supported.'
+    'Educators, parents, and students come together to promote kindness, inclusivity, and positive social behaviors in schools and neighborhoods. They organize events, workshops, and service projects to foster empathy, respect, and understanding among individuals of all ages. By modeling kindness and embracing diversity, they create environments where bullying is not tolerated and everyone feels valued and supported. They organize events, workshops, and service projects to foster empathy, respect, and understanding among individuals of all ages. By modeling kindness and embracing diversity, they create environments where bullying is not tolerated and everyone feels valued and supported.',
   ];
 
   final List<String> _storyImages = [
@@ -50,7 +50,7 @@ class StoriesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.deepOrange.withOpacity(0.7),
+        backgroundColor: Colors.deepOrange.withValues(alpha: 0.7),
         title: const Text('Bully Combat Stories'),
       ),
       body: ListView.builder(
@@ -61,20 +61,15 @@ class StoriesPage extends StatelessWidget {
             shadowColor: Colors.grey.shade700,
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(_storyImages[index]),
-              ),
+              leading: CircleAvatar(backgroundImage: NetworkImage(_storyImages[index])),
               title: Text(_storyTitles[index]),
               subtitle: Text(_storySummaries[index]),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => StoryDetailPage(
-                      title: _storyTitles[index],
-                      content: _storyContents[index],
-                      imageUrl: _storyImages[index],
-                    ),
+                    builder: (context) =>
+                        StoryDetailPage(title: _storyTitles[index], content: _storyContents[index], imageUrl: _storyImages[index]),
                   ),
                 );
               },
@@ -91,17 +86,12 @@ class StoryDetailPage extends StatelessWidget {
   final String content;
   final String imageUrl;
 
-  const StoryDetailPage(
-      {super.key, required this.title, required this.content, required this.imageUrl});
+  const StoryDetailPage({super.key, required this.title, required this.content, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.deepOrange.withOpacity(0.7),
-        title: Text(title),
-      ),
+      appBar: AppBar(centerTitle: true, backgroundColor: Colors.deepOrange.withValues(alpha: 0.7), title: Text(title)),
       body: Container(
         // color: Colors.grey[400], // Set your desired background color here
         child: Column(
@@ -111,18 +101,10 @@ class StoryDetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.network(
-                      imageUrl,
-                      width: MediaQuery.of(context).size.width,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
+                    Image.network(imageUrl, width: MediaQuery.of(context).size.width, height: 200, fit: BoxFit.cover),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        content,
-                        style: const TextStyle(fontSize: 16),
-                      ),
+                      child: Text(content, style: const TextStyle(fontSize: 16)),
                     ),
                   ],
                 ),

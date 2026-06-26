@@ -31,7 +31,7 @@ class AdminObligationsPage extends StatelessWidget {
           itemBuilder: (context, index) {
             return Card(
               elevation: 6,
-              shadowColor: Colors.green.withOpacity(0.8),
+              shadowColor: Colors.green.withValues(alpha:0.8),
               margin: const EdgeInsets.symmetric(vertical: 10.0),
               child: ListTile(
                 leading: const Icon(Icons.check_circle, color: Colors.green),

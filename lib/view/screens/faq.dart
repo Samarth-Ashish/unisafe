@@ -33,11 +33,7 @@ class FAQPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.deepOrange.withOpacity(0.7),
-        title: const Text('FAQ'),
-      ),
+      appBar: AppBar(centerTitle: true, backgroundColor: Colors.deepOrange.withValues(alpha: 0.7), title: const Text('FAQ')),
       body: Container(
         // color: Colors.grey[200], // Background color
         child: ListView.builder(
@@ -46,15 +42,9 @@ class FAQPage extends StatelessWidget {
             return Card(
               elevation: 6, // Elevation for card shadow
               shadowColor: Colors.grey.shade700,
-              margin: const EdgeInsets.symmetric(
-                  vertical: 8, horizontal: 16), // Margin around each card
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16), // Margin around each card
               child: ExpansionTile(
-                title: Text(
-                  _questions[index],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                title: Text(_questions[index], style: const TextStyle(fontWeight: FontWeight.bold)),
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),

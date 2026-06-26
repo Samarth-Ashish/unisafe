@@ -8,7 +8,7 @@ Widget buildReportCard(BuildContext context, Map<String, dynamic> reportData) {
     },
     child: Card(
       elevation: 6,
-      // color: Colors.grey.withOpacity(0.9),
+      // color: Colors.grey.withValues(alpha:0.9),
       shadowColor: reportData['decisionPending'] ? Colors.red : Colors.green,
       margin: const EdgeInsets.all(8.0),
       child: ListTile(
@@ -16,14 +16,8 @@ Widget buildReportCard(BuildContext context, Map<String, dynamic> reportData) {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Incident :',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 5, bottom: 10),
-              child: Text('${reportData['reportIncident']}'),
-            )
+            const Text('Incident :', style: TextStyle(fontWeight: FontWeight.bold)),
+            Padding(padding: const EdgeInsets.only(top: 5, bottom: 10), child: Text('${reportData['reportIncident']}')),
           ],
         ),
         subtitle: Column(
@@ -32,11 +26,7 @@ Widget buildReportCard(BuildContext context, Map<String, dynamic> reportData) {
           children: [
             Text(
               reportData['decisionPending'] ? 'Unresolved' : 'Resolved',
-              style: TextStyle(
-                color:
-                    reportData['decisionPending'] ? Colors.red : Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(color: reportData['decisionPending'] ? Colors.red : Colors.green, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -59,44 +49,29 @@ void showReportDialog(BuildContext context, Map<String, dynamic> reportData) {
     builder: (BuildContext context) {
       return AlertDialog(
         elevation: 30,
-        shadowColor: reportData['decisionPending']
-            ? Colors.red.withOpacity(0.3)
-            : Colors.green.withOpacity(0.3),
+        shadowColor: reportData['decisionPending'] ? Colors.red.withValues(alpha: 0.3) : Colors.green.withValues(alpha: 0.3),
         title: const Text('Report Details'),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              buildReportDetailRow('Incident', reportData['reportIncident'],
-                  columnFormat: true),
-              const SizedBox(
-                height: 10,
-              ),
-              buildReportDetailRow('Physical Bullying',
-                  reportData['physicalBullying'] ? "Yes" : "No"),
-              buildReportDetailRow('Verbal Bullying',
-                  reportData['verbalBullying'] ? "Yes" : "No"),
-              buildReportDetailRow(
-                  'Cyber Bullying', reportData['cyberBullying'] ? "Yes" : "No"),
-              buildReportDetailRow('Social Bullying',
-                  reportData['socialBullying'] ? "Yes" : "No"),
-              const SizedBox(
-                height: 10,
-              ),
+              buildReportDetailRow('Incident', reportData['reportIncident'], columnFormat: true),
+              const SizedBox(height: 10),
+              buildReportDetailRow('Physical Bullying', reportData['physicalBullying'] ? "Yes" : "No"),
+              buildReportDetailRow('Verbal Bullying', reportData['verbalBullying'] ? "Yes" : "No"),
+              buildReportDetailRow('Cyber Bullying', reportData['cyberBullying'] ? "Yes" : "No"),
+              buildReportDetailRow('Social Bullying', reportData['socialBullying'] ? "Yes" : "No"),
+              const SizedBox(height: 10),
               buildReportDetailRow('Name', reportData['name']),
               buildReportDetailRow('Email', reportData['email']),
-              buildReportDetailRow(
-                  'Registration ID', reportData['registrationId']),
+              buildReportDetailRow('Registration ID', reportData['registrationId']),
               buildReportDetailRow('Block', reportData['block'].toString()),
-              const SizedBox(
-                height: 10,
+              const SizedBox(height: 10),
+              buildStatusRow('Status', reportData['decisionPending'] ? "Unresolved" : "Resolved", reportData['decisionPending']),
+              buildReportDetailRow(
+                'Submitted At',
+                '${formatTimestampToDate(reportData['submittedAt'])} ${formatTimestampToTime(reportData['submittedAt'])}',
+                columnFormat: true,
               ),
-              buildStatusRow(
-                  'Status',
-                  reportData['decisionPending'] ? "Unresolved" : "Resolved",
-                  reportData['decisionPending']),
-              buildReportDetailRow('Submitted At',
-                  '${formatTimestampToDate(reportData['submittedAt'])} ${formatTimestampToTime(reportData['submittedAt'])}',
-                  columnFormat: true),
             ],
           ),
         ),
@@ -113,8 +88,7 @@ void showReportDialog(BuildContext context, Map<String, dynamic> reportData) {
   );
 }
 
-Widget buildReportDetailRow(String title, String detail,
-    {bool columnFormat = false}) {
+Widget buildReportDetailRow(String title, String detail, {bool columnFormat = false}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 4.0),
     child: columnFormat
@@ -133,8 +107,8 @@ Widget buildReportDetailRow(String title, String detail,
               Text(
                 detail,
                 style: const TextStyle(
-                    // fontSize: 16,
-                    ),
+                  // fontSize: 16,
+                ),
                 overflow: TextOverflow.visible,
               ),
             ],
@@ -151,9 +125,9 @@ Widget buildReportDetailRow(String title, String detail,
               Text(
                 detail,
                 style: const TextStyle(
-                    // fontSize: 18,
-                    ),
-              )
+                  // fontSize: 18,
+                ),
+              ),
             ],
           ),
   );
@@ -177,7 +151,7 @@ Widget buildStatusRow(String title, String status, bool isPending) {
             // fontWeight: FontWeight.bold,
             color: isPending ? Colors.red : Colors.green,
           ),
-        )
+        ),
       ],
     ),
   );

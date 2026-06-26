@@ -53,7 +53,7 @@ class _StudentHomePageState extends State<StudentHomePage> {
       drawer: _buildDrawer(context),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
-        // fixedColor: Colors.orange.withOpacity(0.2),
+        // fixedColor: Colors.orange.withValues(alpha:0.2),
         backgroundColor: Colors.grey.withValues(alpha: 0.2),
         type: BottomNavigationBarType.fixed,
 
